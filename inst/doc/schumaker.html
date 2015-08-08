@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="author" content="Stuart Baumann" />
+
+<meta name="date" content="2015-08-07" />
+
+<title>Schumaker Spline</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<link href="data:text/css,body%20%7B%0A%20%20background%2Dcolor%3A%20%23fff%3B%0A%20%20margin%3A%201em%20auto%3B%0A%20%20max%2Dwidth%3A%20700px%3B%0A%20%20overflow%3A%20visible%3B%0A%20%20padding%2Dleft%3A%202em%3B%0A%20%20padding%2Dright%3A%202em%3B%0A%20%20font%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0A%20%20font%2Dsize%3A%2014px%3B%0A%20%20line%2Dheight%3A%201%2E35%3B%0A%7D%0A%0A%23header%20%7B%0A%20%20text%2Dalign%3A%20center%3B%0A%7D%0A%0A%23TOC%20%7B%0A%20%20clear%3A%20both%3B%0A%20%20margin%3A%200%200%2010px%2010px%3B%0A%20%20padding%3A%204px%3B%0A%20%20width%3A%20400px%3B%0A%20%20border%3A%201px%20solid%20%23CCCCCC%3B%0A%20%20border%2Dradius%3A%205px%3B%0A%0A%20%20background%2Dcolor%3A%20%23f6f6f6%3B%0A%20%20font%2Dsize%3A%2013px%3B%0A%20%20line%2Dheight%3A%201%2E3%3B%0A%7D%0A%20%20%23TOC%20%2Etoctitle%20%7B%0A%20%20%20%20font%2Dweight%3A%20bold%3B%0A%20%20%20%20font%2Dsize%3A%2015px%3B%0A%20%20%20%20margin%2Dleft%3A%205px%3B%0A%20%20%7D%0A%0A%20%20%23TOC%20ul%20%7B%0A%20%20%20%20padding%2Dleft%3A%2040px%3B%0A%20%20%20%20margin%2Dleft%3A%20%2D1%2E5em%3B%0A%20%20%20%20margin%2Dtop%3A%205px%3B%0A%20%20%20%20margin%2Dbottom%3A%205px%3B%0A%20%20%7D%0A%20%20%23TOC%20ul%20ul%20%7B%0A%20%20%20%20margin%2Dleft%3A%20%2D2em%3B%0A%20%20%7D%0A%20%20%23TOC%20li%20%7B%0A%20%20%20%20line%2Dheight%3A%2016px%3B%0A%20%20%7D%0A%0Atable%20%7B%0A%20%20margin%3A%201em%20auto%3B%0A%20%20border%2Dwidth%3A%201px%3B%0A%20%20border%2Dcolor%3A%20%23DDDDDD%3B%0A%20%20border%2Dstyle%3A%20outset%3B%0A%20%20border%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0A%20%20border%2Dwidth%3A%202px%3B%0A%20%20padding%3A%205px%3B%0A%20%20border%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0A%20%20border%2Dwidth%3A%201px%3B%0A%20%20border%2Dstyle%3A%20inset%3B%0A%20%20line%2Dheight%3A%2018px%3B%0A%20%20padding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0A%20%20border%2Dleft%2Dstyle%3A%20none%3B%0A%20%20border%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0A%20%20background%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0A%0Ap%20%7B%0A%20%20margin%3A%200%2E5em%200%3B%0A%7D%0A%0Ablockquote%20%7B%0A%20%20background%2Dcolor%3A%20%23f6f6f6%3B%0A%20%20padding%3A%200%2E25em%200%2E75em%3B%0A%7D%0A%0Ahr%20%7B%0A%20%20border%2Dstyle%3A%20solid%3B%0A%20%20border%3A%20none%3B%0A%20%20border%2Dtop%3A%201px%20solid%20%23777%3B%0A%20%20margin%3A%2028px%200%3B%0A%7D%0A%0Adl%20%7B%0A%20%20margin%2Dleft%3A%200%3B%0A%7D%0A%20%20dl%20dd%20%7B%0A%20%20%20%20margin%2Dbottom%3A%2013px%3B%0A%20%20%20%20margin%2Dleft%3A%2013px%3B%0A%20%20%7D%0A%20%20dl%20dt%20%7B%0A%20%20%20%20font%2Dweight%3A%20bold%3B%0A%20%20%7D%0A%0Aul%20%7B%0A%20%20margin%2Dtop%3A%200%3B%0A%7D%0A%20%20ul%20li%20%7B%0A%20%20%20%20list%2Dstyle%3A%20circle%20outside%3B%0A%20%20%7D%0A%20%20ul%20ul%20%7B%0A%20%20%20%20margin%2Dbottom%3A%200%3B%0A%20%20%7D%0A%0Apre%2C%20code%20%7B%0A%20%20background%2Dcolor%3A%20%23f7f7f7%3B%0A%20%20border%2Dradius%3A%203px%3B%0A%20%20color%3A%20%23333%3B%0A%7D%0Apre%20%7B%0A%20%20white%2Dspace%3A%20pre%2Dwrap%3B%20%20%20%20%2F%2A%20Wrap%20long%20lines%20%2A%2F%0A%20%20border%2Dradius%3A%203px%3B%0A%20%20margin%3A%205px%200px%2010px%200px%3B%0A%20%20padding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0A%20%20background%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0A%0Acode%20%7B%0A%20%20font%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0A%20%20font%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0A%20%20padding%3A%202px%200px%3B%0A%7D%0A%0Adiv%2Efigure%20%7B%0A%20%20text%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0A%20%20background%2Dcolor%3A%20%23FFFFFF%3B%0A%20%20padding%3A%202px%3B%0A%20%20border%3A%201px%20solid%20%23DDDDDD%3B%0A%20%20border%2Dradius%3A%203px%3B%0A%20%20border%3A%201px%20solid%20%23CCCCCC%3B%0A%20%20margin%3A%200%205px%3B%0A%7D%0A%0Ah1%20%7B%0A%20%20margin%2Dtop%3A%200%3B%0A%20%20font%2Dsize%3A%2035px%3B%0A%20%20line%2Dheight%3A%2040px%3B%0A%7D%0A%0Ah2%20%7B%0A%20%20border%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0A%20%20padding%2Dtop%3A%2010px%3B%0A%20%20padding%2Dbottom%3A%202px%3B%0A%20%20font%2Dsize%3A%20145%25%3B%0A%7D%0A%0Ah3%20%7B%0A%20%20border%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0A%20%20padding%2Dtop%3A%2010px%3B%0A%20%20font%2Dsize%3A%20120%25%3B%0A%7D%0A%0Ah4%20%7B%0A%20%20border%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0A%20%20margin%2Dleft%3A%208px%3B%0A%20%20font%2Dsize%3A%20105%25%3B%0A%7D%0A%0Ah5%2C%20h6%20%7B%0A%20%20border%2Dbottom%3A%201px%20solid%20%23ccc%3B%0A%20%20font%2Dsize%3A%20105%25%3B%0A%7D%0A%0Aa%20%7B%0A%20%20color%3A%20%230033dd%3B%0A%20%20text%2Ddecoration%3A%20none%3B%0A%7D%0A%20%20a%3Ahover%20%7B%0A%20%20%20%20color%3A%20%236666ff%3B%20%7D%0A%20%20a%3Avisited%20%7B%0A%20%20%20%20color%3A%20%23800080%3B%20%7D%0A%20%20a%3Avisited%3Ahover%20%7B%0A%20%20%20%20color%3A%20%23BB00BB%3B%20%7D%0A%20%20a%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0A%20%20%20%20text%2Ddecoration%3A%20underline%3B%20%7D%0A%20%20a%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0A%20%20%20%20text%2Ddecoration%3A%20underline%3B%20%7D%0A%0A%2F%2A%20Class%20described%20in%20https%3A%2F%2Fbenjeffrey%2Ecom%2Fposts%2Fpandoc%2Dsyntax%2Dhighlighting%2Dcss%0A%20%20%20Colours%20from%20https%3A%2F%2Fgist%2Egithub%2Ecom%2Frobsimmons%2F1172277%20%2A%2F%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%2F%2A%20Keyword%20%2A%2F%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%2F%2A%20DataType%20%2A%2F%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%2F%2A%20DecVal%20%28decimal%20values%29%20%2A%2F%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%2F%2A%20BaseN%20%2A%2F%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%2F%2A%20Float%20%2A%2F%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%2F%2A%20Char%20%2A%2F%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%2F%2A%20String%20%2A%2F%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%2F%2A%20Comment%20%2A%2F%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%2F%2A%20OtherToken%20%2A%2F%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%2F%2A%20AlertToken%20%2A%2F%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%2F%2A%20Function%20calls%20%2A%2F%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%2F%2A%20ErrorTok%20%2A%2F%0A%0A" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+<div id="header">
+<h1 class="title">Schumaker Spline</h1>
+<h4 class="author"><em>Stuart Baumann</em></h4>
+<h4 class="date"><em>2015-08-07</em></h4>
+</div>
+
+
+<p>This package implements the schumaker spline for one dimensional interpolation. This is the first publicly available R package to give a shape-constrained spline without any optimisation being necessary. It also has significant speed advantages compared to the other shape constrained splines. It is intended for use in dynammic programing problems and in other cases where a simple shape constrained spline is useful.</p>
+<p>This package first illistrates that the base splines can deliver nonconcave splines from concave data. It follows by describing the options the schumaker spline provides. It then describes a consumption smoothing problem before illustrating why the schumaker spline performs significantly better than existing splines.</p>
+<p>Finally the speed of this spline in comparison with other splines is described.</p>
+<div id="the-schumaker-spline-and-base-splines" class="section level2">
+<h2>The schumaker spline and base splines</h2>
+<p>We can show that the base splines are not shape preserving. Now we can plot the monotonic spline (you can experiment with the other ones for a similar result):</p>
+<pre class="sourceCode r"><code class="sourceCode r">x =<span class="st"> </span><span class="kw">seq</span>(<span class="dv">1</span>,<span class="dv">10</span>)
+y =<span class="st"> </span><span class="kw">log</span>(x)
+
+xarray =<span class="st"> </span><span class="kw">seq</span>(<span class="dv">1</span>,<span class="dv">10</span>,<span class="fl">0.01</span>)
+
+BaseSpline =<span class="st"> </span><span class="kw">splinefun</span>(x,y, <span class="dt">method =</span> <span class="st">&quot;monoH.FC&quot;</span>)
+Base0 =<span class="st"> </span><span class="kw">BaseSpline</span>(xarray)
+DerivBaseSpline =<span class="st"> </span><span class="kw">splinefun</span>(xarray, numDeriv::<span class="kw">grad</span>(BaseSpline, xarray))
+Base1 =<span class="st"> </span><span class="kw">DerivBaseSpline</span>(xarray)
+Deriv2BaseSpline =<span class="st"> </span><span class="kw">splinefun</span>(xarray, numDeriv::<span class="kw">grad</span>(DerivBaseSpline, xarray))
+Base2 =<span class="st"> </span><span class="kw">Deriv2BaseSpline</span>(xarray)
+
+<span class="kw">plot</span>(xarray, Base0, <span class="dt">type =</span> <span class="st">&quot;l&quot;</span>, <span class="dt">col =</span> <span class="dv">4</span>, <span class="dt">ylim =</span> <span class="kw">c</span>(-<span class="dv">1</span>,<span class="dv">3</span>), <span class="dt">main =</span> <span class="st">&quot;Base Spline and first two derivatives&quot;</span>,
+     <span class="dt">ylab =</span> <span class="st">&quot;Spline and derivatives&quot;</span>, <span class="dt">xlab =</span> <span class="st">&quot;x&quot;</span>)
+<span class="kw">lines</span>(xarray, Base1, <span class="dt">col =</span> <span class="dv">2</span>)
+<span class="kw">lines</span>(xarray, Base2, <span class="dt">col =</span> <span class="dv">3</span>)
+<span class="kw">abline</span>(<span class="dt">h =</span> <span class="dv">0</span>, <span class="dt">col =</span> <span class="dv">1</span>)
+<span class="kw">text</span>(<span class="dt">x=</span><span class="kw">rep</span>(<span class="dv">8</span>,<span class="dv">8</span>,<span class="dv">8</span>), <span class="dt">y=</span><span class="kw">c</span>(<span class="dv">2</span>, <span class="fl">0.5</span>,-<span class="fl">0.2</span>), <span class="dt">pos=</span><span class="dv">4</span>, <span class="dt">labels=</span><span class="kw">c</span>(<span class="st">'Spline'</span>, <span class="st">'First Derivative'</span>, <span class="st">'Second Derivative'</span>))</code></pre>
+<p><img src="data:image/png;base64,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" /> Here you can see that the first derivative is always positive - the spline is monotonic. However the second derivative moves above and below 0. The spline is not globally concave.</p>
+<p>Now we can show the schumaker spline:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(schumaker)
+SchumSpline =<span class="st"> </span>schumaker::<span class="kw">Schumaker</span>(x,y)
+Schum0 =<span class="st"> </span>SchumSpline$<span class="kw">Spline</span>(xarray)
+Schum1 =<span class="st"> </span>SchumSpline$<span class="kw">DerivativeSpline</span>(xarray)
+Schum2 =<span class="st"> </span>SchumSpline$<span class="kw">SecondDerivativeSpline</span>(xarray)
+
+<span class="kw">plot</span>(xarray, Schum0, <span class="dt">type =</span> <span class="st">&quot;l&quot;</span>, <span class="dt">col =</span> <span class="dv">4</span>, <span class="dt">ylim =</span> <span class="kw">c</span>(-<span class="dv">1</span>,<span class="dv">3</span>), <span class="dt">main =</span> <span class="st">&quot;Schumaker Spline and first two derivatives&quot;</span>,
+     <span class="dt">ylab =</span> <span class="st">&quot;Spline and derivatives&quot;</span>, <span class="dt">xlab =</span> <span class="st">&quot;x&quot;</span>)
+<span class="kw">lines</span>(xarray, Schum1, <span class="dt">col =</span> <span class="dv">2</span>)
+<span class="kw">lines</span>(xarray, Schum2, <span class="dt">col =</span> <span class="dv">3</span>)
+<span class="kw">abline</span>(<span class="dt">h =</span> <span class="dv">0</span>, <span class="dt">col =</span> <span class="dv">1</span>)
+<span class="kw">text</span>(<span class="dt">x=</span><span class="kw">rep</span>(<span class="dv">8</span>,<span class="dv">8</span>,<span class="dv">8</span>), <span class="dt">y=</span><span class="kw">c</span>(<span class="dv">2</span>, <span class="fl">0.5</span>,-<span class="fl">0.2</span>), <span class="dt">pos=</span><span class="dv">4</span>, <span class="dt">labels=</span><span class="kw">c</span>(<span class="st">'Spline'</span>, <span class="st">'First Derivative'</span>, <span class="st">'Second Derivative'</span>))</code></pre>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAwAAAAHgCAMAAAAlhPoXAAABKVBMVEUAAAAAAAMAAA0AABAAACgAADoAAGYAAP8AAy0ADVEAEFwAKIEAOpAAZpAAZrYAzQADAAADAAMDLaENAAANAA0NUbwQAAAQAAMQEBAQLS0QXFwQXP8oAAAoAA0oKCgogYEogf8tAwAtLRAtXC0tof86AAA6ADo6AGY6OgA6OpA6kLY6kNtRDQBRUShRvP9cEABcoS1c/1xc//9mAABmADpmZmZmtv+BKACBvFGB/4GB//+QOgCQOjqQZgCQkDqQkGaQtpCQ29uQ2/+hLQOh/1yh//+2ZgC2Zma2kDq225C2/7a2/9u2//+8UQ28/4G8///bkDrb2//b/7bb/9vb////AAD/XBD/gSj/oS3/tmb/vFH/25D//1z//4H//6H//7b//7z//9v///+hZDRZAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAYH0lEQVR4nO2dDX/bxn2A4Thy0lTTXGdxu9ndnNVqtrGNtyiRt3pbV3nhuszesFWWzMiOKn7/D7F7wQEHEoSIw9sB/+f5JRQNHu6O5P+5N4BAsgYQTDJ2BQDGBAFANAgAokEAEA0CgGgQAESDACAaBADRIACIBgFANAgAokEAEA0CgGgQAESDACAaBADRIACIBgFANAgAokEAEA0CgGgQAESDACAaBADRIACIBgFANAgAokEAEA0CgGgQAESDACAaBADRzE6ANFEcnm9tPThrmtMyufcqsLibF2qbeWhaaHX5S1XIn+zO7j9eVT1tkL9PfbVV/m3fV1zMTAD15VhOy9t7EmBXcR0LsNJF/N2u7K5P8np6T5vkX6Ku2iZ/BIiYNAvIze+2JwF2FddJjBTl19e+1FO0F6DjXWJnZgIsTajohtm0ySvXOusQUuMIE0f2W7w+SRb64WhlkqTZi+ur48RPp7Iy37kehBytbU7/duwCslScSv/diXXB6wH8kr1sLEVhW8n0P7No0zslB79z2dni87HXshDQJvwbvTlTcGkeTTGL0sdU5L/5zkw59o3pHRdeLW1R/7WVwHtb1UPCiJmdAOZL9b4X+9WnXktdFsBDb17Zp/brVhvsF52l0wlsTtlXXCouK03vUBKgyNHLxuAV5ifLB1aVAtji0zzFpgD3/lX/SxWlsjJv0uWdh6Wf//Y7+4MuZ1W0G14tPQH8BFt5TKmfmJkAaZIUw4VVYmNcfR1pkkXPYkuAxTrvAxY6No6KgL73Kvuel1ms2GgqGrhScUvzxa90W1gWwJa/KGWj8Qvzk5kssuyyYpxUrnjddWVvcGsIdHWcRe2pzts85O/dfS55/tvvzJRj83dvo/SRbCXw8vCrNRFmJoBr3MwAyEZGmrVMp1nQbwigvkD7mPUaaxvWJkLu/afdlsVsmsXo6a7iclnKApya+DkqZZOTFeYlKypYLYAuRCWsGvi7AF2odN+YRxfjfjIv/4p35soxKm1/JK+2Enh5+NWaCDMTIB9WbKxWpG4IcrQpwJHbbL9tF9ImnRpOu5FuPgzYmJAWxbkI0wk25gBZEX42Bq8wL5ltcrcmwX52bs9FOV32dKn2X6rx/JF55j6GvOJ+/hXvzKY3fcfKTWiKjyT/XIsEXh5+tSbC7ARYZ0FZBJJmWwDXeJUFMN/gqUvnRs5ZlFcJUBTnAlGPmqoF8LPR+IV5yeyGegHy2ctphQArPZBXE3I9Wj/Ns1u5rsvPv+Kd2XLMh7fMhjneR5ILUCTw8/CqNRHmJUDeZ+fjkOyFfQWwGeQCHP7ejUzyb9QXoFTcXj1AKTD8wso9gKl3rQDrYsFlS4DrE9X8H57rTiDfr9wD5PlXvLPs5dSsaZ2uNz6Somf1E/hva2LrQPMSQDdAp2s3fs7aQ7vIUghgn7sZclmAVVJ850s7RraThI2+pLq46jnAVtPu8AurHKPVCHDzz2frsnhr92+d8ptsGmCXQmvnAJvvLItvZdFv3bpY6SPZSuDn4VVrIsxLgOLIVNY3H2WL9GUBsrFOdQ9gIjePw1U2yrBjiXITvFHcrlUgP7LzbDR+YX6y+lUgNyvJF/tLnUJ2UCExA3Q7Gr9lFWjznRUdhF3b36rlZgIvD79aE2FmApSX0JdVc8xi0rZrDrA948uGtkVfUlXcsni+QwAvm9LeGxX0czJU9ABpMZtYFSmzp1fmUNnVcTlt0ft4+W+/Mxe+q6Q033ZNSnYcwEtQzqP0DifAzARwU7KF9w+7RufFlzbg8P92rwIdnHnLh97iUHkovVXc0sRGsZa+LYCXjcErrJTMROhp/RzAaJwf/3J1WrrjcN5B7CytP0738t96Z06AvKfyamny/91mAv9tedWaBrMTYDymNPIFBwJ0BgJMEQToDASYIgjQGQgwRRAARIMAIBoEANEgAIgGAUA0CACiQQAQDQKAaBAARIMAIBoEANEgAIgGAUA0CACiQQAQDQKAaBAARIMAIBoEANEgAIgGAUA0CACiQQAQDQKAaBAARIMAIBoEANF0LEACEAVjCdBtdgBhIACIBgFANAgAokEAEA0CgGgQAETTpwCrmhshIwBEQU8CLJNkcfW3+s7pp9UJEACioB8Blofn66Vp/dPidufh2QH0RS8CmHb/6pdn6umqfEfQ5kegAfqkJwEW6vHmf9f0ABA5/QyBUtfuWxXaZgfQFz1NglO7/LNKdsyBEQDigOMAIBoEANEgAIgGAUA0CACiQQAQDQKAaBAARIMAIBoEANEgAIgGAUA0CACiQQAQDQKAaBAARIMAIBoEANEgAIgGAUA0CACiQQAQDQKAaBAARIMAIBoEANEgAIgGAUA0CACiQQAQDQKAaBAARIMAIBoEANEgAIgGAUA0CACiQQAQDQKAaBAARIMAIBoEANEgAIgGAUA0CACiQQAQwUc7tiMAzJmPHLsSIADMj49ujfscBIDZ0CDucxAApk5A2BcgAEyUkPZ+GwSAadFJ2BcgAEyDjgPfgQAQNT3FfQ4CQIz0Hfc5CAAxMVjgOxAAYmDwwHcgAIzJaIHvQAAYg9ED3xEgwPXJYp0myeH5IOXCrIgm8B0BAiwPz6+Oj9bLo0HKhVkQXeA7mgtwfXK6XiXq/3uvhigXpk058N89TJLk7lfe6+8ePlL/jVI1Q5gASxX8KQJADVUt/kWiQ/3ZnafFplGjfx02BDq6Pjk8vz5hCAQV1I11nn2iH3/4/JNi0wQFuD5JDs5uXtTGv5okq1GSfrKjn0CA2XH7KN+L/Lc/+cX9JHmQD4HePfwLNTrSLrxMzPah6GcZND04W9suAgHmz/7T24vEGfD2vop2PSLKBVDjopfZ/2/vD2dALwLcvFiYx8NzBJgxAQs7Ku7tHNjG+MuPv80FeKA3PjJ/1xeleXKvhAigxkCH58vF7rR6nqxZHp5vCJDkNKwnxESbJc0fPk9MI6+HOxd3nuYCPDLDoQszQbavDkKAAKuDs1RPgncbYHuAtZ4v0wPMiY4W85/d/ertT3SgVwiQtY8RC6CjO60Z3Gjca6qvQIBZ0Enku4Zdxf1OAfwl0iEIOw6gBag9EJbaNSBlCwJMmy4P4LpVIDXEt3OAZ94c4NE4B8XCe4Blq5OBECB2+jh14SL5+Fv9+EB1BqqpL60CWQHMKlD5UFm/BM8BXBvfd7kwOD2etWNOhdDR/fb+n983I/1NAcxxgOEWgUJXgZLk4GyYcmE4BjxfbcB1nnr4PQCsBw19CwJ0mx2EMtJZyhMWoOVZcE3Lhb6I8/z8oQk5G7T9DAABRoXQLwgbAq30wTpOh54ehP4mwXOAnYe4Oi4XuoHQr4YeYPYQ+nWEHAlmDjARCP3bYRVolkR6CYYI4TjA3CD0G4EAM4LQb05DAa5PFuZMIA2rQPFAsx8KPcDUIfZbETAJ/vrM/OXKcKND6LcnXACuDDciNPtd0VSAZXFdh5rLQnRYLmxA7HdKeA8wULlQQOh3D5PgaUC73xNh1wZlGXRACP0+CbtBRnq0vjrmR/H9Q/D3Tci5QIv1Sl8Yi8ui9AqxPwhhF8a6+uKV+X+AciVC7A9H2IWx9EoQAvQCwT8sAXMAfQRsuWAI1DnE/giELIMuj2quett1uTIg9seC4wCjQ/CPCQKMCsE/NvwkcjSI/RjgwlhjQMMfDVwWZWiI/ajgwlgDQsMfH/QAA0HwxwkXxhoAgj9eWAXqGYI/bjgO0CcEf/QgQF8Q/JOAC2P1AcE/GegBOofgnxJhvwcYsNxpQdM/NcJ+ETZgudOB9Z4pEnKn+Ha/BGhY7kQg+CdKSA/AJHgDgn+6MAluCU3/tEGAFhD80ydEADUIOjxftlsLmr4ARP8sCJkEH5ylh+f6+lhDlBsnBP9cCDsOoC+JIvb+ADT9cyLsOIAWQOYdYgj+mRHeAyzFXRiLpn+GBM8B0kTW1aGJ/nkSuArU+jdh0xKA4J8tHAe4FaJ/ziBAPUT/zGn8g5jiLpHzXwUi+udPyCTY3CB11W4SEL8ARL8IQpZB7VUhZn1/ANZ8pBD+g5j5Hggj+AUR/pPIuR4II/xFETQH0F1AOss5ANEvjeADYa3a/zgFIPoFwnEAB+EvEgQwEP1S6UWAPQ6XRSUA0S+XfnqAnXfPKMRokl2v0PiLpqchkDta1lF2/UH4C6evOcDqlp8LRCEA0Q9yT4Yj+mEt92Q4wh8MMk+GI/whQ+DJcEQ/FIg7GY7oBx9ZJ8PR+MMGkk6GI/xhCznnAhH9UIEQAWj8oZoAAW5eTO1AGNEPuwgQYDmte4TR+EMNIccBpnSbVMIfapn3bVIJf7iF8FMhBiq3BYQ/3ErwgbCeyn3jaF0C4Q97EOt9gt+0NIHwh72I/zhAkAmEP+xH/ALk7N8pEP6wLwECuDHQaAfCbhGB8If9CTkQdnieHq2vjse/R1ilA4Q/NCDsQNhK3yc4it8DbCpA8w+NCDsQdvXFK/P/AOXeit8NEP7QkLBfhF1/fRaNAJ4CxD80JWAOkKrZ73IRyRDIYhQg/KE5IcugyyO9EtTunNDOT4Xo4NgxCGRCxwFqUc1/F+dPgDTmIYA78QEF4uZZdhbNo3cPH228dPGolGTz5fV6exe7V+X2/ZmFAN7on24gZp59/O2OV/Iwtkne3v9kn/xaBr9mDgKUJ78oEC97C7C+uPN0j/wQYF21+IMBsZILoCP33U//Orn71dv7esCjH+1rWZIfPtddwEv12oO1TfkPD1UqHe/ajWdmlGT2+nd/e7ZDAyYvQOXiJwrESVmAh+pfJnYvvEmBS6L/vlQh/fb+A5tSpbBWqFeeqb/6RZtNsd3t0IDAC2Mdni/b/TK4IwF2rv2jQIxsCKAi9eLuV/mGUpKXd78yCXQK80SnUBv1bu9++nRt1MkEyLe7HRpUKeQXYQdn6eF5y9/GdyNA3aEvDIiPfInHRa56sOFaJYCdB6hAz1LaXbLZwYWfTbY936FBlcJOhdBHgdPRrwt0y6FfOoHo2OgBdKD+8HluRCmJ+ntRWjQ1D2rsY8ZGSXL3770eINue79CgSmEnw2kBRr88+u2nPqBAZFQIYDbfebopgB7W5ytBhQAXei5s23h/CJRt32/pqEx4DzD25dH3OfOHJdG42CGAela1DJpvKwR49/BnashkRvkX5ZHUz8w0oPmqaPAcIG13bYi2Aux75hsGxMS2AKbRvtA9wAM/iV3K0Ys6efdgo/tZ8olr/JMHZh7tbc93aFCl4Mujt7s9QFsBGpz5iQLxUNED6HG7CVt3HMAfxutlfdeyu+SP7PY7T5+Z4wH6OEC+3e3QgGkeB2h24jMKwE6mKEDzE//bXmUIZssEL4/e6ocvb94gA3hM7/Lo3f3uCxlgcpdH7+t3j8gglIldHn2Q3/3igSCmdXn0IX/2jgUiiO3y6HWMcdkHNJg5sV4evYIRL3uCBbNlOscBRr/qz5s3zJTnx1QEiO6qV2+2GbtKEMBEBIgu/qvAiAnSUIDrk8UYc4AphH8FuBA/U+gBJtH83wIdQ6RMQIA5xH+JiukDdoxF/ALMLfxvAS+GpfEcIMkZZg4gLP53gBZ9EXsPQPzXUTuYQpN9iFuA2Q3/RwFFagj+TXCra0LsWS7xPwz7dSTz9CXsqhDqMW33q/h9yiX846SpL1GrE3I6tD0ZtO/rAtH8z5AW7vTkUMDZoF+fmb89XxmO+IdKOhYnvAfo9y6RhD8MQvAPYnq9MhzNPwxEix/EtDoWVlsu8Q9D0dNxgFuvHVSXHeEPg9GPAGmSXTplley4hkpNdsQ/DEdjAa6OFzquay+Oq6+gnrFrqry7XOIfBqSpAFfHp3YabJ7swLt00MZiaQIQFw0FWOqLApmLIy53Xx6oVQ8AA/Gne9FBFr3RxafQ/CeR7tJYdQfC8jXSkDnA3Oni+x0ufLrII2YaC3Dqrg5aeyTYrZXuPFgmWYD26WYQeLEQIoAd/vd7JDhKOmlf9w7eebe8sRAyBzAngra8ROg0BegiKcEbFU0FWB2cXZ/otr/lXQKGFaBJ013TwDaJXVrvadD4OMDKDOyvjnv6QUwXcVqRa7PKdSEATIO4fxJZz9ACEP+tef84SZIPf7P/DpcffGn+PreLKk8qctzetr58Ur29AgTYPzkCtOXSRPDzLKj32sMJ8KP/UY/ff/rjfXbaN/g1CLB/egRoy3MTv3/81V5hbCgLkP+zHgQIT1mXHgFaUor812pE85l7ordf2g3vH//VYzvWUS988OuyADaHbNf3P/918uE/PX7y/ac6tXbjuRklff9pkvzov/3teVnbIEBletZveuEyyQ14reLy+08/s0/eP/7MDI/eP/6x+l9HrI5mNVe4TMoCmL9u1/eP1T9Ua2+tUK/oDsZm96S0PS+rAgSAAdGNs5kD65BXQnz4G/tEt+1mwwdfmg2q8bbt9/MNAV67PdyuOtjVRp3h+59/afZ0AuTb3Q5VNUIAGJY//kq36nYwn8e5DVzzaAbw6sEG7OW2APmuLqX5P0t4mSSFANn2fIeq6iAADI4a3FxmJyM/+f7PbITb+FQh68L6daUA6m++ay6AnlybsZHqXv7R6wGy7fkOVXVBABgM1wjnrbK3bb8eQA/r810LAS71XNhm4Q+Bsu21S0cIAIPhVoHM+D1rjyvmADasrRGvt5dBvV2f5A9/qWfMWplLbwiUba9dFUUAGI7LRMfxZZIt/pgprn5iGvZ8FSgLa/3CxiqQXcpxuxYCrJ/r5SXb+CefGam87UVZFUxZgAZnFndRGrTHnAphI/G1Oyli6ziAC+vScQB/GJ/t6glwmR84+PK5OR6gjwPk24uytkEAEA0CgGgQAEQjQgDiH3aBACAaBADRIACIBgFANAgAopm2AHv+bAUBYBeTFqASBIAGIACIBgFANAgAokEAEM38BKgIdwSAXSAAiAYBQDQIAKKZowBc0xD2ZoYCAOwPAoBoEABEgwAgGgQA0SAAiAYBQDQIAKJBABANAoBoEABEgwAgGgQA0SAAiAYBQDQIAKJBABANAoBoEABEgwAgGgQA0SAAiAYBQDQIAKJBABANAoBoehHg+iTJufeqdXYAvdFPD3DzYkfch2UH0Bc9DYFuXhx1mR1AT/Q1B1glp11mB9APA0+Ci7lBJ9kBtIRVIBBNnwLcvFh0mR1A9yAAiAYBQDQIAKJBABANq0AgGgQA0SAAiAYBQDQIAKIZTQCAKBhJgB6Jo6ZR1CKKSsRRi9aViOJd7EUcNY2iFlFUIo5aIMDARFGLKCoRRy0QYGCiqEUUlYijFggwMFHUIopKxFELBBiYKGoRRSXiqAUCDEwUtYiiEnHUAgEGJopaRFGJOGqBAAMTRS2iqEQctRAkAEAPIACIBgFANAgAokEAEA0CgGgQAESDACAaBADRIACIBgFANAgAokEAEM00BLh5kSTJ7kvyDsjy8HzkGlwdJ8kttyocgFR9IfW3i+udqy/MLUtXSXJwFp7LJAS4eaHeYhrB164+7bEFWKkKXJ+M/VGk6gu57YaJPXN9Yu7Zu9I1aWHAJAS4OtYfdXrbTYr75/pkbAHstenH/ijs7XKXY2q4sjdrt59Hi5pMQgBLG887Ij38l5EFuPrl2ajlW8YXYJUsVlqA1m3jhARYjt4DqOgbew6wuvfdSQTToQiGQGsrgGkQVhIEWI3+tevudmwBUt3x2wZ4VFpOPTupgo56OyxoMTiYjACr8efAqQr+0QWwX/jYnaHuja+Ox22RZAkwfvtve9vRBTChb0e+4xHFqoSoIVA6fvybpe9k7OVv+1WPPRVu3e52UglBk+B07IMuOWP3ANcn+pMYewhkw27kWqzkLIOOPdr0GFsAMxGpu1HtMEQzB5BxICwbfIy97KAZXQC9/hLBeHA5fi2yDigVcCoEQF8gAIgGAUA0CACiQQAQDQKAaBAARIMAIBoEANEgAIgGAUA0CACiQQAQDQKAaBAARIMAIBoEANEgAIgGAUA0CACiQQAQDQKAaBAARIMAIBoEANEgAIgGAUA0CACiQQAQDQKAaBAgLvS9Tq5Pxr/8uRgQIC70vS/S0e9BIAgEiIzVve++Phu7EoJAgNhYjn8/WEkgQGyMfQN2YSBAZNy8+Gbsu2CLAgEiIz38w+j3gJQEAsSFvg/w2HcBFgUCxMXS3AaYafBgIACIBgFANAgAokEAEA0CgGgQAESDACAaBADRIACIBgFANAgAokEAEA0CgGgQAESDACAaBADRIACIBgFANAgAokEAEA0CgGgQAESDACAaBADR/D96StVjDAvvtAAAAABJRU5ErkJggg==" /></p>
+<p>Here the second derivative is always negative - the spline is globally concave as well as monotonic.</p>
+</div>
+<div id="optional-settings" class="section level2">
+<h2>Optional Settings</h2>
+<p>There are three optional setting in creating a spline. Firstly the gradients at each of the (x,y) points can be input to give more accuracy. If not supplied these are estimated from the points.</p>
+<p>Secondly if Vectorised = TRUE arrays can be input to the spline. If arrays will never be input to the spline then you can set Vectorised = FALSE for a small speed improvement (about 30%).</p>
+<p>Finally there are three options for out of sample prediction.</p>
+<ul>
+<li><p>Curve - This is where the quadriatic curve that is present in the first and last interval are used to predict points before the first interval and after the last interval respectively.</p></li>
+<li><p>Linear - This is where a line is extended out before the first interval and after the last interval. The slope of the line is given by the derivative at the start of the first interval and end of the last interval.</p></li>
+<li><p>Constant - This is where the first and last y values are used for prediction before the first point of the interval and after the last part of the interval respectively.</p></li>
+</ul>
+<p>The three out of sample options are shown below. Here you can see in black the curve is extended out. In green the ends are extrapolated linearly whilst red has constant extrapolation. Note that there is no difference between the 3 within sample.</p>
+<pre class="sourceCode r"><code class="sourceCode r">x =<span class="st"> </span><span class="kw">seq</span>(<span class="dv">1</span>,<span class="dv">10</span>)
+y =<span class="st"> </span><span class="kw">log</span>(x)
+xarray =<span class="st"> </span><span class="kw">seq</span>(-<span class="dv">5</span>,<span class="dv">15</span>,<span class="fl">0.01</span>)
+
+SchumSplineCurve    =<span class="st"> </span><span class="kw">Schumaker</span>(x,y, <span class="dt">Extrapolation =</span> <span class="st">&quot;Curve&quot;</span>   )$Spline
+
+SchumSplineConstant =<span class="st"> </span><span class="kw">Schumaker</span>(x,y, <span class="dt">Extrapolation =</span> <span class="st">&quot;Constant&quot;</span>)$Spline
+
+SchumSplineLinear   =<span class="st"> </span><span class="kw">Schumaker</span>(x,y, <span class="dt">Extrapolation =</span> <span class="st">&quot;Linear&quot;</span>  )$Spline
+
+SchumSplineCurveVals    =<span class="st"> </span><span class="kw">SchumSplineCurve</span>(xarray)
+SchumSplineConstantVals =<span class="st"> </span><span class="kw">SchumSplineConstant</span>(xarray)
+SchumSplineLinearVals   =<span class="st"> </span><span class="kw">SchumSplineLinear</span>(xarray)
+
+<span class="kw">plot</span>(xarray, SchumSplineCurveVals, <span class="dt">type =</span> <span class="st">&quot;l&quot;</span>, <span class="dt">col =</span> <span class="dv">1</span>, <span class="dt">ylim =</span> <span class="kw">c</span>(-<span class="dv">5</span>,<span class="dv">5</span>),
+     <span class="dt">main =</span> <span class="st">&quot;Ways of predicting outside of sample&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;Spline value&quot;</span>, <span class="dt">xlab =</span> <span class="st">&quot;x&quot;</span>)
+<span class="kw">lines</span>(xarray, SchumSplineConstantVals, <span class="dt">col =</span> <span class="dv">2</span>)
+<span class="kw">lines</span>(xarray, SchumSplineLinearVals, <span class="dt">col =</span> <span class="dv">3</span>)</code></pre>
+<p><img src="data:image/png;base64,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" /></p>
+</div>
+<div id="example-a-simple-consumption-smoothing-problem" class="section level2">
+<h2>Example: A simple consumption smoothing problem</h2>
+<p>Consider a consumer that has a budget of <span class="math">\(B_t\)</span> at time <span class="math">\(t\)</span> and a periodic income of <span class="math">\(1\)</span>. They have a periodic utility function given by:</p>
+<p><span class="math">\(u_t = \epsilon_t x_t^{0.2}\)</span></p>
+<p>where <span class="math">\(x_t\)</span> is spending in period <span class="math">\(t\)</span> and <span class="math">\(\epsilon_t\)</span> is the shock in period <span class="math">\(t\)</span> drawn from some stationary nonnegative shock process with pdf <span class="math">\(f(\epsilon)\)</span>.</p>
+<p>The problem for the consumer in period <span class="math">\(t\)</span> is:</p>
+<p><span class="math">\(V(B_t | \epsilon_{t}) = \max_{0 &lt; x_t &lt; B} \hspace{0.5cm} \epsilon_t x_t^{0.2} + \beta E_t[ V(B_{t+1})]\)</span></p>
+<p>Where <span class="math">\(\beta\)</span> is a discounting factor and <span class="math">\(B_{t+1} = 1 + B_t - x_t\)</span>.</p>
+<div id="algorithm" class="section level3">
+<h3>Algorithm</h3>
+<p>We can first note that due to the shock process it is not possible to get analytical equations to describe the paths of spending and the budget over the long term. We can get a numerical solution however. The key step is to find expressions for the Expected value function as a function of <span class="math">\(B_{t+1}\)</span>. With this we can run simulations with random shocks to see the long term distributions of <span class="math">\(x_t\)</span> and <span class="math">\(B_t\)</span>. The algorithm we will use is:</p>
+<ol style="list-style-type: decimal">
+<li>We discretize the budget statespace.</li>
+<li>We make an initial guess of the future value function <span class="math">\(E[ V(B_{t+1})]\)</span> at every value of <span class="math">\(B_{t+1}\)</span> in our discretized statespace. A deterministic approximation of the problem (assume shocks will be <span class="math">\(E[\epsilon_{t}]\)</span> forever) is often good for this.</li>
+<li>We use the schumaker spline to join together our estimates at each point in the discretized statespace into an interpolation function.</li>
+<li>At every point in the statespace we create updated estimates</li>
+</ol>
+<ul>
+<li>We use a cubature package to estimate <span class="math">\(\int^\infty_{0} V(B_t | \epsilon_t ) f(\epsilon_t) d\epsilon_t\)</span></li>
+<li>In this integral we use a one dimensional optimizer along with the above equation to evaluate <span class="math">\(V(B_t | \epsilon_t )\)</span></li>
+</ul>
+<ol start="5" style="list-style-type: decimal">
+<li>Check a convergence criteria. Are the new <span class="math">\(V(B_t | \epsilon_t )\)</span> values very close to the old values?</li>
+</ol>
+<ul>
+<li>If they are we end the algorithm</li>
+<li>If they are not we go back to point 3.</li>
+</ul>
+<p>This strategy relies on the consumption problem being a contraction mapping. This means that if we use this algorithm we will coverge to a fixed point function. The turboem package (squareem method) can be useful here in accelerating the convergence.</p>
+</div>
+<div id="why-a-schumaker-spline-is-necessary" class="section level3">
+<h3>Why a schumaker spline is necessary</h3>
+<p>There are a few reasons we need the spline to be shape preserving and without optimization to make this work:</p>
+<ul>
+<li><p>Shape preservation is necessary so the spline is globally concave (the <span class="math">\(V(B_t | \epsilon_t )\)</span> values will always be concave as the periodic utility function is always concave). This is necessary for the one dimensional optimisation step. The periodic utility function is concave and the future value function needs to be concave (in <span class="math">\(B_{t+1}\)</span>) to guarantee a unique local optima. Other splines can incorporate convexities in the intervals between interpolation points which can lead to multiple local optima.</p></li>
+<li><p>There do exist shape preserving splines that incorporate an optimization step (ie scam, cobs). These are not effective for this kind of problem because it is not possible to converge to a fixed point. In each iteration the optimization settles on a slightly different parameter set which means the future value function can “jump around”. In addition the optimization step can take a significant amount of time because evaluations of the future value function spline take longer.</p></li>
+</ul>
+</div>
+</div>
+<div id="speed" class="section level2">
+<h2>Speed</h2>
+<ul>
+<li>The schumaker spline is faster to create to create splines and predict with splines than the other constrained splines packages (cobs and scam) by a large amount.</li>
+<li>The schumaker spline takes about 190 times longer to create than the base spline.</li>
+<li>The schumaker spline takes about half as long to predict an array of points than the base spline.</li>
+<li>The schumaker spline takes about 25% as long to predict a single point than the base spline.</li>
+</ul>
+<p>These microbenchmarks are available below:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(microbenchmark)
+<span class="kw">library</span>(cobs)
+<span class="kw">library</span>(scam)</code></pre>
+<pre><code>## Loading required package: mgcv
+## Loading required package: nlme
+## This is mgcv 1.8-7. For overview type 'help(&quot;mgcv-package&quot;)'.
+## This is scam 1.1-9.</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">x =<span class="st"> </span><span class="kw">seq</span>(<span class="dv">1</span>,<span class="dv">10</span>)
+y =<span class="st"> </span><span class="kw">log</span>(x)
+dat =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x =</span> x, <span class="dt">y =</span> y)
+xarray =<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">15</span>,<span class="fl">0.01</span>)
+
+<span class="kw">microbenchmark</span>(
+  <span class="kw">Schumaker</span>(x,y),
+  <span class="kw">splinefun</span>(x,y,<span class="st">&quot;monoH.FC&quot;</span>),
+  <span class="kw">scam</span>(y~<span class="kw">s</span>(x,<span class="dt">k=</span><span class="dv">4</span>,<span class="dt">bs=</span><span class="st">&quot;mdcx&quot;</span>,<span class="dt">m=</span><span class="dv">1</span>),<span class="dt">data=</span>dat),
+  <span class="kw">cobs</span>(x , y, <span class="dt">constraint =</span> <span class="kw">c</span>(<span class="st">&quot;decrease&quot;</span>, <span class="st">&quot;convex&quot;</span>), <span class="dt">print.mesg =</span> <span class="ot">FALSE</span>),
+  <span class="dt">unit =</span> <span class="st">&quot;relative&quot;</span>
+)</code></pre>
+<pre><code>## Unit: relative
+##                                                                  expr
+##                                                       Schumaker(x, y)
+##                                           splinefun(x, y, &quot;monoH.FC&quot;)
+##                 scam(y ~ s(x, k = 4, bs = &quot;mdcx&quot;, m = 1), data = dat)
+##  cobs(x, y, constraint = c(&quot;decrease&quot;, &quot;convex&quot;), print.mesg = FALSE)
+##       min       lq     mean   median       uq      max neval
+##  280.0897 201.8949 196.7173 181.7697 188.8911 177.3236   100
+##    1.0000   1.0000   1.0000   1.0000   1.0000   1.0000   100
+##  390.2860 285.5328 279.4938 253.6104 273.4937 275.0180   100
+##  661.1598 490.4575 479.8921 430.6222 459.3527 723.2516   100</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">BaseSp =<span class="st">   </span><span class="kw">splinefun</span>(x,y,<span class="st">&quot;monoH.FC&quot;</span>)
+SchuSp =<span class="st">   </span><span class="kw">Schumaker</span>(x,y)$Spline
+ScamSp =<span class="st">   </span><span class="kw">scam</span>(y~<span class="kw">s</span>(x,<span class="dt">k=</span><span class="dv">4</span>,<span class="dt">bs=</span><span class="st">&quot;mdcx&quot;</span>,<span class="dt">m=</span><span class="dv">1</span>),<span class="dt">data=</span>dat)
+CobsSp =<span class="st">     </span><span class="kw">cobs</span>(x , y, <span class="dt">constraint =</span> <span class="kw">c</span>(<span class="st">&quot;decrease&quot;</span>, <span class="st">&quot;convex&quot;</span>), <span class="dt">print.mesg =</span> <span class="ot">FALSE</span>)
+
+ScamPr =<span class="st"> </span>function(x){  <span class="kw">predict.scam</span>(ScamSp,<span class="kw">data.frame</span>(<span class="dt">x =</span> x))}
+CobsPr =<span class="st"> </span>function(x){  <span class="kw">predict</span>(CobsSp, x)[,<span class="dv">2</span>] }
+
+<span class="kw">microbenchmark</span>(
+  <span class="kw">SchuSp</span>(xarray),
+  <span class="kw">BaseSp</span>(xarray),
+  <span class="kw">ScamPr</span>(xarray),
+  <span class="kw">CobsPr</span>(xarray),
+  <span class="dt">unit =</span> <span class="st">&quot;relative&quot;</span>
+)</code></pre>
+<pre><code>## Unit: relative
+##            expr       min        lq      mean    median        uq
+##  SchuSp(xarray)  1.000000  1.000000  1.000000  1.000000  1.000000
+##  BaseSp(xarray)  1.789826  1.806502  1.445776  1.811464  1.760317
+##  ScamPr(xarray) 41.420161 48.773831 35.122166 53.518808 44.886020
+##  CobsPr(xarray)  1.538982  1.600003  1.537026  1.684772  1.529704
+##        max neval
+##   1.000000   100
+##   1.021225   100
+##  11.617287   100
+##   1.311298   100</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">SchuSp =<span class="st">   </span><span class="kw">Schumaker</span>(x,y, <span class="dt">Vectorise =</span> <span class="ot">FALSE</span>)$Spline
+<span class="kw">microbenchmark</span>(
+  <span class="kw">SchuSp</span>(<span class="kw">runif</span>(<span class="dv">1</span>)),
+  <span class="kw">BaseSp</span>(<span class="kw">runif</span>(<span class="dv">1</span>)),
+  <span class="kw">ScamPr</span>(<span class="kw">runif</span>(<span class="dv">1</span>)),
+  <span class="kw">CobsPr</span>(<span class="kw">runif</span>(<span class="dv">1</span>)),
+  <span class="dt">unit =</span> <span class="st">&quot;relative&quot;</span>
+)</code></pre>
+<pre><code>## Unit: relative
+##              expr        min         lq       mean     median         uq
+##  SchuSp(runif(1))   1.000000   1.000000   1.000000   1.000000   1.000000
+##  BaseSp(runif(1))   5.499869   4.888792   3.491205   4.144650   4.235326
+##  ScamPr(runif(1)) 215.444284 171.513992 127.834016 159.824746 147.774414
+##  CobsPr(runif(1))  10.249803   9.036891   6.021769   7.355108   6.872559
+##         max neval
+##   1.0000000   100
+##   0.5362518   100
+##  21.1477504   100
+##   0.9316023   100</code></pre>
+</div>
+<div id="reference" class="section level2">
+<h2>Reference</h2>
+<p>The key reference for the schumaker spline is Judd’s Numerical Methods in Economics (1998). This presents precisely how to create the spline and it is simple to reconcile the code with the equations from this book. This book also gives more detail on solving dynammic control problems. A further reference which advocates the use of the schumaker spline is Ljungqvist and Sargent’s Recursive Economic Theory.</p>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
