@@ -1,8 +1,8 @@
 #' ppmak
 #'
-#' Create a Spline with given intervals and quadratic coefficients
+#' Create a spline with given intervals and quadratic coefficients.
 #' This is an internal function that is called from the Schumaker function. It roughly works like ppmak in matlab.
-#' @param IntStarts This is a vector with the start of each interval
+#' @param IntStarts This is a vector with the start of each interval.
 #' @param SpCoefs This is a matrix with three columns. The first is the coefficient of the squared term followed by linear term coefficients and constants.
 #' @param Vectorised This is a boolean parameter. Set to TRUE if you want to be able to input vectors to the created spline. If you will only input single values set this to FALSE as it is a bit faster.
 

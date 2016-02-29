@@ -1,5 +1,5 @@
 
-#' Create a Schumaker Spline
+#' Create a Schumaker spline
 #' @export
 #' @param x A vector of x coordinates
 #' @param y A corresponding vector of y coordinates
@@ -7,21 +7,18 @@
 #' @param Vectorised This is a boolean parameter. Set to TRUE if you want to be able to input vectors to the created spline. If you will only input single values set this to FALSE as it is a bit faster.
 #' @param Extrapolation This determines how the spline function responds when an input is recieved outside the domain of x. The options are "Curve" which outputs the result of the point on the quadratic curve at the nearest interval, "Constant" which outputs the y value at the end of the x domain and "Linear" which extends the spline using the gradiant at the edge of x.
 #'
-#' @return A list with 3 spline functions. Thee first spline is is for the input points, the second spline is the first derivative of the first spline, the third spline is the second derivative. Each function takes an x value (or vector if Vectorised = TRUE) and outputs the interpolated y value (or relevant derivative).
+#' @return A list with 3 spline functions and a table with spline intervals and coefficients. The first spline is the schumaker spline, the second spline is the first derivative of the schumaker spline, the third spline is the second derivative of the schumaker spline. Each function takes an x value (or vector if Vectorised = TRUE) and outputs the interpolated y value (or relevant derivative).
 #' @references Judd (1998). Numerical Methods in Economics. MIT Press
 #' @examples
 #' x = seq(1,6)
 #' y = log(x)
 
 #' SSS = schumaker::Schumaker(x,y, Vectorised = TRUE)
-#' Spline   = SSS[[1]]
-#' SplineD  = SSS[[2]]
-#' Spline2D = SSS[[3]]
 
 #' xarray = seq(1,6,0.01)
-#' Result = Spline(xarray)
-#' Result2 = SplineD(xarray)
-#' Result3 = Spline2D(xarray)
+#' Result = SSS$Spline(xarray)
+#' Result2 = SSS$DerivativeSpline(xarray)
+#' Result3 = SSS$SecondDerivativeSpline(xarray)
 
 #' plot(xarray, Result, ylim=c(-0.5,2))
 #' lines(xarray, Result2, col = 2)
@@ -72,7 +69,7 @@ IntervalTab[IntervalTab$SubIntervalNum == 2, "EndOfInterval"] = x[2:n]
 IntervalTab[IntervalTab$SubIntervalNum == 2, "StartOfInterval"] = IntervalTab$tsi[IntervalTab$SubIntervalNum == 2]
 IntervalTab[IntervalTab$SubIntervalNum == 1, "EndOfInterval"] = IntervalTab$tsi[IntervalTab$SubIntervalNum == 1]
 # This gets rid of empty intervals. The 1e-10 is there in case of numerical imprecision.
-IntervalTab <<- IntervalTab[which(IntervalTab$EndOfInterval + 1e-10 > IntervalTab$StartOfInterval),]
+IntervalTab <- IntervalTab[which(IntervalTab$EndOfInterval + 1e-10 > IntervalTab$StartOfInterval),]
 
 if ((Extrapolation %in% c("Constant", "Linear"))){
   Botx = min(IntervalTab$StartOfInterval)
@@ -121,5 +118,5 @@ Spline2 = ppmak2Deriv(IntStarts, SpCoefs, Vectorised )
 CompiledSpline0 = compiler::cmpfun(Spline0)
 CompiledSpline1 = compiler::cmpfun(Spline1)
 CompiledSpline2 = compiler::cmpfun(Spline2)
-return(list(Spline = CompiledSpline0, DerivativeSpline = CompiledSpline1, SecondDerivativeSpline = CompiledSpline2 ))
+return(list(Spline = CompiledSpline0, DerivativeSpline = CompiledSpline1, SecondDerivativeSpline = CompiledSpline2 , IntervalTab = IntervalTab))
 }

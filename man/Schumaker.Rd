@@ -2,7 +2,7 @@
 % Please edit documentation in R/Schumaker.R
 \name{Schumaker}
 \alias{Schumaker}
-\title{Create a Schumaker Spline}
+\title{Create a Schumaker spline}
 \usage{
 Schumaker(x, y, ff = "Not-Supplied", Vectorised = TRUE,
   Extrapolation = c("Curve", "Constant", "Linear"))
@@ -19,22 +19,19 @@ Schumaker(x, y, ff = "Not-Supplied", Vectorised = TRUE,
 \item{Extrapolation}{This determines how the spline function responds when an input is recieved outside the domain of x. The options are "Curve" which outputs the result of the point on the quadratic curve at the nearest interval, "Constant" which outputs the y value at the end of the x domain and "Linear" which extends the spline using the gradiant at the edge of x.}
 }
 \value{
-A list with 3 spline functions. Thee first spline is is for the input points, the second spline is the first derivative of the first spline, the third spline is the second derivative. Each function takes an x value (or vector if Vectorised = TRUE) and outputs the interpolated y value (or relevant derivative).
+A list with 3 spline functions and a table with spline intervals and coefficients. The first spline is the schumaker spline, the second spline is the first derivative of the schumaker spline, the third spline is the second derivative of the schumaker spline. Each function takes an x value (or vector if Vectorised = TRUE) and outputs the interpolated y value (or relevant derivative).
 }
 \description{
-Create a Schumaker Spline
+Create a Schumaker spline
 }
 \examples{
 x = seq(1,6)
 y = log(x)
 SSS = schumaker::Schumaker(x,y, Vectorised = TRUE)
-Spline   = SSS[[1]]
-SplineD  = SSS[[2]]
-Spline2D = SSS[[3]]
 xarray = seq(1,6,0.01)
-Result = Spline(xarray)
-Result2 = SplineD(xarray)
-Result3 = Spline2D(xarray)
+Result = SSS$Spline(xarray)
+Result2 = SSS$DerivativeSpline(xarray)
+Result3 = SSS$SecondDerivativeSpline(xarray)
 plot(xarray, Result, ylim=c(-0.5,2))
 lines(xarray, Result2, col = 2)
 lines(xarray, Result3, col = 3)

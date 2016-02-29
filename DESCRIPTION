@@ -1,8 +1,8 @@
 Package: schumaker
 Type: Package
 Title: Schumaker Shape-Preserving Spline
-Version: 0.2
-Date: 2016-02-27
+Version: 0.3
+Date: 2016-02-29
 Author: Stuart Baumann [aut, cre], Margaryta Klymak[ctb]
 Maintainer: Stuart Baumann <Stuart.Baumann@ed.ac.uk>
 Description: This is a shape preserving spline which is guaranteed
@@ -19,6 +19,6 @@ Suggests: knitr, numDeriv, cobs, scam, microbenchmark
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1
 NeedsCompilation: no
-Packaged: 2016-02-27 02:44:31 UTC; stuar
+Packaged: 2016-02-29 15:16:32 UTC; stuar
 Repository: CRAN
-Date/Publication: 2016-02-27 09:53:08
+Date/Publication: 2016-02-29 18:39:52

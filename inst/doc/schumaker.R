@@ -62,36 +62,41 @@ y = log(x)
 dat = data.frame(x = x, y = y)
 xarray = seq(0,15,0.01)
 
-microbenchmark(
+ScamSpline = function(dat) {scam(y~s(x,k=4,bs="mdcx",m=1),data=dat)}
+CobsSpline = function(x,y) {cobs(x , y, constraint = c("decrease", "convex"), print.mesg = FALSE)}
+
+CreateSplineTest = microbenchmark(
   Schumaker(x,y),
   splinefun(x,y,"monoH.FC"),
-  scam(y~s(x,k=4,bs="mdcx",m=1),data=dat),
-  cobs(x , y, constraint = c("decrease", "convex"), print.mesg = FALSE),
-  unit = "relative"
+  ScamSpline(dat),
+  CobsSpline(x,y)
 )
+print(CreateSplineTest, unit = "relative", signif = 3)
 
 BaseSp =   splinefun(x,y,"monoH.FC")
 SchuSp =   Schumaker(x,y)$Spline
 ScamSp =   scam(y~s(x,k=4,bs="mdcx",m=1),data=dat)
-CobsSp =     cobs(x , y, constraint = c("decrease", "convex"), print.mesg = FALSE)
+CobsSp =   cobs(x , y, constraint = c("decrease", "convex"), print.mesg = FALSE)
 
 ScamPr = function(x){  predict.scam(ScamSp,data.frame(x = x))}
 CobsPr = function(x){  predict(CobsSp, x)[,2] }
 
-microbenchmark(
+PredictArrayTest = microbenchmark(
   SchuSp(xarray),
   BaseSp(xarray),
   ScamPr(xarray),
-  CobsPr(xarray),
-  unit = "relative"
+  CobsPr(xarray)
 )
+print(PredictArrayTest, unit = "relative", signif = 3)
+
 
 SchuSp =   Schumaker(x,y, Vectorise = FALSE)$Spline
-microbenchmark(
+PredictPointTest = microbenchmark(
   SchuSp(runif(1)),
   BaseSp(runif(1)),
   ScamPr(runif(1)),
-  CobsPr(runif(1)),
-  unit = "relative"
+  CobsPr(runif(1))
 )
+print(PredictPointTest, unit = "relative", signif = 3)
+
 

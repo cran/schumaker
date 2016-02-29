@@ -11,7 +11,7 @@
 
 <meta name="author" content="Stuart Baumann &amp; Margaryta Klymak" />
 
-<meta name="date" content="2016-02-27" />
+<meta name="date" content="2016-02-29" />
 
 <title>Schumaker Spline</title>
 
@@ -52,7 +52,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
 
 <h1 class="title">Schumaker Spline</h1>
 <h4 class="author"><em>Stuart Baumann &amp; Margaryta Klymak</em></h4>
-<h4 class="date"><em>2016-02-27</em></h4>
+<h4 class="date"><em>2016-02-29</em></h4>
 
 </div>
 
@@ -62,7 +62,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <p>Finally the speed of this spline in comparison with other splines is described.</p>
 <div id="the-schumaker-spline-and-base-splines" class="section level2">
 <h2>The schumaker spline and base splines</h2>
-<p>We can show that base splines are not shape preserving. Now we can plot the monotonic spline (you can experiment with the other ones for a similar result):</p>
+<p>We can show that base splines are not shape preserving. Plotting the base monotonic spline (you can experiment with the other ones for a similar result):</p>
 <pre class="sourceCode r"><code class="sourceCode r">x =<span class="st"> </span><span class="kw">seq</span>(<span class="dv">1</span>,<span class="dv">10</span>)
 y =<span class="st"> </span><span class="kw">log</span>(x)
 
@@ -131,7 +131,7 @@ SchumSplineLinearVals   =<span class="st"> </span><span class="kw">SchumSplineLi
 </div>
 <div id="example-a-simple-consumption-smoothing-problem" class="section level2">
 <h2>Example: A simple consumption smoothing problem</h2>
-<p>Consider a consumer that has a budget of <span class="math">\(B_t\)</span> at time <span class="math">\(t\)</span> and a periodic income of <span class="math">\(1\)</span>. They have a periodic utility function given by:</p>
+<p>Consider a consumer that has a budget of <span class="math">\(B_t\)</span> at time <span class="math">\(t\)</span> and a periodic income of <span class="math">\(1\)</span>. She has a periodic utility function given by:</p>
 <p><span class="math">\(u_t = \epsilon_t x_t^{0.2}\)</span></p>
 <p>where <span class="math">\(x_t\)</span> is spending in period <span class="math">\(t\)</span> and <span class="math">\(\epsilon_t\)</span> is the shock in period <span class="math">\(t\)</span> drawn from some stationary nonnegative shock process with pdf <span class="math">\(f(\epsilon)\)</span>.</p>
 <p>The problem for the consumer in period <span class="math">\(t\)</span> is:</p>
@@ -151,7 +151,7 @@ SchumSplineLinearVals   =<span class="st"> </span><span class="kw">SchumSplineLi
 <li>In this integral we use a one dimensional optimizer along with the above equation to evaluate <span class="math">\(V(B_t | \epsilon_t )\)</span></li>
 </ul>
 <ol start="5" style="list-style-type: decimal">
-<li>Check a convergence criteria. Are the new <span class="math">\(V(B_t | \epsilon_t )\)</span> values very close to the old values?</li>
+<li>Check your convergence criteria. Are the new <span class="math">\(V(B_t | \epsilon_t )\)</span> values very close to the old values?</li>
 </ol>
 <ul>
 <li>If they are we end the algorithm</li>
@@ -163,7 +163,7 @@ SchumSplineLinearVals   =<span class="st"> </span><span class="kw">SchumSplineLi
 <h3>Why a schumaker spline is necessary</h3>
 <p>There are a few reasons we need the spline to be shape preserving and without optimization to make this work:</p>
 <ul>
-<li><p>Shape preservation is necessary so the spline is globally concave (the <span class="math">\(V(B_t | \epsilon_t )\)</span> values will always be concave as the periodic utility function is always concave). This is necessary for the one dimensional optimisation step. The periodic utility function is concave and the future value function needs to be concave (in <span class="math">\(B_{t+1}\)</span>) to guarantee a unique local optima. Other splines can incorporate convexities in the intervals between interpolation points which can lead to multiple local optima.</p></li>
+<li><p>Shape preservation is necessary so the spline is globally concave (the <span class="math">\(V(B_t | \epsilon_t )\)</span> values will always be concave as the periodic utility function is always concave). This is necessary for the one dimensional optimisation step. The periodic utility function is concave and the future value function needs to be concave (in <span class="math">\(B_{t+1}\)</span>) to guarantee a unique local optima. Other splines can incorporate tiny convexities in the intervals between interpolation points which can lead to multiple local optima.</p></li>
 <li><p>There do exist shape preserving splines that incorporate an optimization step (ie scam, cobs). These are not effective for this kind of problem because it is not possible to converge to a fixed point. In each iteration the optimization settles on a slightly different parameter set which means the future value function can “jump around”. In addition the optimization step can take a significant amount of time because evaluations of the future value function spline take longer.</p></li>
 </ul>
 </div>
@@ -171,7 +171,7 @@ SchumSplineLinearVals   =<span class="st"> </span><span class="kw">SchumSplineLi
 <div id="speed" class="section level2">
 <h2>Speed</h2>
 <ul>
-<li>The schumaker spline is faster to create to create splines and predict with splines than the other constrained splines packages (cobs and scam) by a large amount.</li>
+<li>The schumaker spline is faster to create splines and predict with splines than the other constrained splines packages (cobs and scam) by a large amount.</li>
 <li>The schumaker spline takes about 190 times longer to create than the base spline.</li>
 <li>The schumaker spline takes about half as long to predict an array of points than the base spline.</li>
 <li>The schumaker spline takes about 25% as long to predict a single point than the base spline.</li>
@@ -189,69 +189,57 @@ y =<span class="st"> </span><span class="kw">log</span>(x)
 dat =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x =</span> x, <span class="dt">y =</span> y)
 xarray =<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">15</span>,<span class="fl">0.01</span>)
 
-<span class="kw">microbenchmark</span>(
+ScamSpline =<span class="st"> </span>function(dat) {<span class="kw">scam</span>(y~<span class="kw">s</span>(x,<span class="dt">k=</span><span class="dv">4</span>,<span class="dt">bs=</span><span class="st">&quot;mdcx&quot;</span>,<span class="dt">m=</span><span class="dv">1</span>),<span class="dt">data=</span>dat)}
+CobsSpline =<span class="st"> </span>function(x,y) {<span class="kw">cobs</span>(x , y, <span class="dt">constraint =</span> <span class="kw">c</span>(<span class="st">&quot;decrease&quot;</span>, <span class="st">&quot;convex&quot;</span>), <span class="dt">print.mesg =</span> <span class="ot">FALSE</span>)}
+
+CreateSplineTest =<span class="st"> </span><span class="kw">microbenchmark</span>(
   <span class="kw">Schumaker</span>(x,y),
   <span class="kw">splinefun</span>(x,y,<span class="st">&quot;monoH.FC&quot;</span>),
-  <span class="kw">scam</span>(y~<span class="kw">s</span>(x,<span class="dt">k=</span><span class="dv">4</span>,<span class="dt">bs=</span><span class="st">&quot;mdcx&quot;</span>,<span class="dt">m=</span><span class="dv">1</span>),<span class="dt">data=</span>dat),
-  <span class="kw">cobs</span>(x , y, <span class="dt">constraint =</span> <span class="kw">c</span>(<span class="st">&quot;decrease&quot;</span>, <span class="st">&quot;convex&quot;</span>), <span class="dt">print.mesg =</span> <span class="ot">FALSE</span>),
-  <span class="dt">unit =</span> <span class="st">&quot;relative&quot;</span>
-)</code></pre>
+  <span class="kw">ScamSpline</span>(dat),
+  <span class="kw">CobsSpline</span>(x,y)
+)
+<span class="kw">print</span>(CreateSplineTest, <span class="dt">unit =</span> <span class="st">&quot;relative&quot;</span>, <span class="dt">signif =</span> <span class="dv">3</span>)</code></pre>
 <pre><code>## Unit: relative
-##                                                                  expr
-##                                                       Schumaker(x, y)
-##                                           splinefun(x, y, &quot;monoH.FC&quot;)
-##                 scam(y ~ s(x, k = 4, bs = &quot;mdcx&quot;, m = 1), data = dat)
-##  cobs(x, y, constraint = c(&quot;decrease&quot;, &quot;convex&quot;), print.mesg = FALSE)
-##       min       lq     mean   median       uq      max neval
-##  290.8048 182.0341 171.7828 160.6800 159.4023 149.0093   100
-##    1.0000   1.0000   1.0000   1.0000   1.0000   1.0000   100
-##  459.5418 284.5107 267.4622 249.5471 241.5509 413.1629   100
-##  778.9557 477.5648 446.6378 423.6692 400.2666 499.0156   100</code></pre>
+##                         expr min  lq     mean median  uq   max neval
+##              Schumaker(x, y) 331 217 167.0054    193 187  42.5   100
+##  splinefun(x, y, &quot;monoH.FC&quot;)   1   1   1.0000      1   1   1.0   100
+##              ScamSpline(dat) 596 343 275.0070    296 295 126.0   100
+##             CobsSpline(x, y) 968 582 453.1715    503 477 147.0   100</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">BaseSp =<span class="st">   </span><span class="kw">splinefun</span>(x,y,<span class="st">&quot;monoH.FC&quot;</span>)
 SchuSp =<span class="st">   </span><span class="kw">Schumaker</span>(x,y)$Spline
 ScamSp =<span class="st">   </span><span class="kw">scam</span>(y~<span class="kw">s</span>(x,<span class="dt">k=</span><span class="dv">4</span>,<span class="dt">bs=</span><span class="st">&quot;mdcx&quot;</span>,<span class="dt">m=</span><span class="dv">1</span>),<span class="dt">data=</span>dat)
-CobsSp =<span class="st">     </span><span class="kw">cobs</span>(x , y, <span class="dt">constraint =</span> <span class="kw">c</span>(<span class="st">&quot;decrease&quot;</span>, <span class="st">&quot;convex&quot;</span>), <span class="dt">print.mesg =</span> <span class="ot">FALSE</span>)
+CobsSp =<span class="st">   </span><span class="kw">cobs</span>(x , y, <span class="dt">constraint =</span> <span class="kw">c</span>(<span class="st">&quot;decrease&quot;</span>, <span class="st">&quot;convex&quot;</span>), <span class="dt">print.mesg =</span> <span class="ot">FALSE</span>)
 
 ScamPr =<span class="st"> </span>function(x){  <span class="kw">predict.scam</span>(ScamSp,<span class="kw">data.frame</span>(<span class="dt">x =</span> x))}
 CobsPr =<span class="st"> </span>function(x){  <span class="kw">predict</span>(CobsSp, x)[,<span class="dv">2</span>] }
 
-<span class="kw">microbenchmark</span>(
+PredictArrayTest =<span class="st"> </span><span class="kw">microbenchmark</span>(
   <span class="kw">SchuSp</span>(xarray),
   <span class="kw">BaseSp</span>(xarray),
   <span class="kw">ScamPr</span>(xarray),
-  <span class="kw">CobsPr</span>(xarray),
-  <span class="dt">unit =</span> <span class="st">&quot;relative&quot;</span>
-)</code></pre>
+  <span class="kw">CobsPr</span>(xarray)
+)
+<span class="kw">print</span>(PredictArrayTest, <span class="dt">unit =</span> <span class="st">&quot;relative&quot;</span>, <span class="dt">signif =</span> <span class="dv">3</span>)</code></pre>
 <pre><code>## Unit: relative
-##            expr       min        lq      mean    median        uq
-##  SchuSp(xarray)  1.000000  1.000000 1.0000000  1.000000  1.000000
-##  BaseSp(xarray)  1.562945  1.545315 0.2244708  1.608311  1.704043
-##  ScamPr(xarray) 39.720369 41.896859 4.8171019 43.053354 41.439299
-##  CobsPr(xarray)  1.157347  1.203131 0.1667256  1.330860  1.494132
-##          max neval
-##  1.000000000   100
-##  0.020448538   100
-##  0.085249099   100
-##  0.005399734   100</code></pre>
+##            expr   min    lq      mean median    uq    max neval
+##  SchuSp(xarray)  1.00  1.00  1.000000   1.00  1.00  1.000   100
+##  BaseSp(xarray)  1.52  1.53  1.290212   1.56  1.46  0.721   100
+##  ScamPr(xarray) 39.80 40.20 39.143948  42.40 46.50 49.100   100
+##  CobsPr(xarray)  1.13  1.18  1.125200   1.32  1.35  0.781   100</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">SchuSp =<span class="st">   </span><span class="kw">Schumaker</span>(x,y, <span class="dt">Vectorise =</span> <span class="ot">FALSE</span>)$Spline
-<span class="kw">microbenchmark</span>(
+PredictPointTest =<span class="st"> </span><span class="kw">microbenchmark</span>(
   <span class="kw">SchuSp</span>(<span class="kw">runif</span>(<span class="dv">1</span>)),
   <span class="kw">BaseSp</span>(<span class="kw">runif</span>(<span class="dv">1</span>)),
   <span class="kw">ScamPr</span>(<span class="kw">runif</span>(<span class="dv">1</span>)),
-  <span class="kw">CobsPr</span>(<span class="kw">runif</span>(<span class="dv">1</span>)),
-  <span class="dt">unit =</span> <span class="st">&quot;relative&quot;</span>
-)</code></pre>
+  <span class="kw">CobsPr</span>(<span class="kw">runif</span>(<span class="dv">1</span>))
+)
+<span class="kw">print</span>(PredictPointTest, <span class="dt">unit =</span> <span class="st">&quot;relative&quot;</span>, <span class="dt">signif =</span> <span class="dv">3</span>)</code></pre>
 <pre><code>## Unit: relative
-##              expr       min        lq       mean     median         uq
-##  SchuSp(runif(1))   1.00000   1.00000   1.000000   1.000000   1.000000
-##  BaseSp(runif(1))   6.00000   5.17110   3.906418   4.389837   3.941156
-##  ScamPr(runif(1)) 337.83831 272.69457 135.619490 186.661888 144.999025
-##  CobsPr(runif(1))  12.25025  10.48503   7.292844   8.644082   8.152931
-##        max neval
-##   1.000000   100
-##   1.648775   100
-##  19.447854   100
-##   2.072086   100</code></pre>
+##              expr    min     lq       mean median     uq    max neval
+##  SchuSp(runif(1))   1.00   1.00   1.000000   1.00   1.00   1.00   100
+##  BaseSp(runif(1))   6.38   5.07   3.880859   3.95   3.29   2.85   100
+##  ScamPr(runif(1)) 318.00 241.00 164.358713 175.00 142.00 132.00   100
+##  CobsPr(runif(1))  12.80  11.60   9.591653   9.00   7.96  15.40   100</code></pre>
 </div>
 <div id="reference" class="section level2">
 <h2>Reference</h2>

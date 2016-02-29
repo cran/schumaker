@@ -7,7 +7,7 @@
 ppmak(IntStarts, SpCoefs, Vectorised = TRUE)
 }
 \arguments{
-\item{IntStarts}{This is a vector with the start of each interval}
+\item{IntStarts}{This is a vector with the start of each interval.}
 
 \item{SpCoefs}{This is a matrix with three columns. The first is the coefficient of the squared term followed by linear term coefficients and constants.}
 
@@ -17,7 +17,7 @@ ppmak(IntStarts, SpCoefs, Vectorised = TRUE)
 A spline function for the given intervals and quadratic curves. Each function takes an x value (or vector if Vectorised = TRUE) and outputs the interpolated y value (or relevent derivative).
 }
 \description{
-Create a Spline with given intervals and quadratic coefficients
+Create a spline with given intervals and quadratic coefficients.
 This is an internal function that is called from the Schumaker function. It roughly works like ppmak in matlab.
 }
 
