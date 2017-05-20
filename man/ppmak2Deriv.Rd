@@ -20,4 +20,3 @@ A spline function for the given intervals and quadratic curves. Each function ta
 Create the second derivative of the spline defined by given intervals and quadratic coefficients.
 This is an internal function that is called from the Schumaker function.
 }
-

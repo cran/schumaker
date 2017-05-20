@@ -20,4 +20,3 @@ The location of the knot and quadratic coefficients for an interval.
 This creates quadratic coefficients for one interval of a domain.
 This is an internal function that is called from the Schumaker function.
 }
-

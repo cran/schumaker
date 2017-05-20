@@ -1,7 +1,7 @@
 ---
 title: "Schumaker Spline"
 author: "Stuart Baumann & Margaryta Klymak"
-date: "`r Sys.Date()`"
+date: "2017-05-06"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Schumaker Spline}
@@ -19,7 +19,8 @@ Finally the speed of this spline in comparison with other splines is described.
 ## The schumaker spline and base splines
 
 We can show that base splines are not shape preserving. Plotting the base monotonic spline (you can experiment with the other ones for a similar result):
-```{r, fig.show='hold', fig.width=7, fig.height=4.5}
+
+```r
 x = seq(1,10)
 y = log(x)
 
@@ -39,10 +40,13 @@ lines(xarray, Base2, col = 3)
 abline(h = 0, col = 1)
 text(x=rep(8,8,8), y=c(2, 0.5,-0.2), pos=4, labels=c('Spline', 'First Derivative', 'Second Derivative'))
 ```
+
+![plot of chunk unnamed-chunk-1](figure/unnamed-chunk-1-1.png)
 Here you can see that the first derivative is always positive - the spline is monotonic. However the second derivative moves above and below 0. The spline is not globally concave.
 
 Now we can show the schumaker spline:
-```{r, fig.show='hold', fig.width=7, fig.height=4.5}
+
+```r
 library(schumaker)
 SchumSpline = schumaker::Schumaker(x,y)
 Schum0 = SchumSpline$Spline(xarray)
@@ -56,6 +60,8 @@ lines(xarray, Schum2, col = 3)
 abline(h = 0, col = 1)
 text(x=rep(8,8,8), y=c(2, 0.5,-0.2), pos=4, labels=c('Spline', 'First Derivative', 'Second Derivative'))
 ```
+
+![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png)
 
 Here the second derivative is always negative - the spline is globally concave as well as monotonic.
 
@@ -75,7 +81,8 @@ Finally there are three options for out of sample prediction.
   * Constant - This is where the first and last y values are used for prediction before the first point of the interval and after the last part of the interval respectively.
 
 The three out of sample options are shown below. Here you can see in black the curve is extended out. In green the ends are extrapolated linearly whilst red has constant extrapolation. Note that there is no difference between the 3 within sample.
-```{r, fig.show='hold', fig.width=7, fig.height=4.5}
+
+```r
 x = seq(1,10)
 y = log(x)
 xarray = seq(-5,15,0.01)
@@ -95,6 +102,8 @@ plot(xarray, SchumSplineCurveVals, type = "l", col = 1, ylim = c(-5,5),
 lines(xarray, SchumSplineConstantVals, col = 2)
 lines(xarray, SchumSplineLinearVals, col = 3)
 ```
+
+![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3-1.png)
 
 
 ## Example: A simple consumption smoothing problem
@@ -138,65 +147,12 @@ There are a few reasons we need the spline to be shape preserving and without op
 
 ## Speed
 
-  * The schumaker spline is of comparable speed to create as other shape preserving splines.
-  * Compared to other splines (including the base spline), the schumaker spline is faster or roughly equally fast in evaluating points.
+  * The schumaker spline is faster to create splines and predict with splines than the other constrained splines packages (cobs and scam) by a large amount.
+  * The schumaker spline takes about 190 times longer to create than the base spline.
+  * The schumaker spline takes about half as long to predict an array of points than the base spline.
+  * The schumaker spline takes about 25% as long to predict a single point than the base spline.
 
-These benchmarks are available below:
-
-```{r, fig.show='hold', fig.width=7, fig.height=4.5}
-library(cobs)
-#library(scam)
-
-x = seq(1,10)
-y = log(x)
-dat = data.frame(x = x, y = y)
-xarray = seq(0,15,0.01)
-
-ScamSpline = function(dat) {scam::scam(y~s(x,k=4,bs="mdcx",m=1),data=dat)}
-CobsSpline = function(x,y) {cobs::cobs(x , y, constraint = c("decrease", "convex"), print.mesg = FALSE)}
-
-CreateSplineTest = rbenchmark::benchmark(
-  replicate(10, Schumaker(x,y)),
-  replicate(10,splinefun(x,y,"monoH.FC")),
-  replicate(10,ScamSpline(dat)),
-  replicate(10,CobsSpline(x,y)),
-  columns = c('test','elapsed', 'relative')
-)
-print(CreateSplineTest)
-
-BaseSp =   splinefun(x,y,"monoH.FC")
-SchuSp =   Schumaker(x,y)$Spline
-ScamSp =   scam::scam(y~s(x,k=4,bs="mdcx",m=1),data=dat)
-CobsSp =   cobs::cobs(x , y, constraint = c("decrease", "convex"), print.mesg = FALSE)
-
-ScamPr = function(x){  scam::predict.scam(ScamSp,data.frame(x = x))}
-CobsPr = function(x){  predict(CobsSp, x)[,2] }
-
-PredictArrayTest = rbenchmark::benchmark(
-  replicate(10,SchuSp(xarray)),
-  replicate(10,BaseSp(xarray)),
-  replicate(10,ScamPr(xarray)),
-  replicate(10,CobsPr(xarray)),
-  columns = c('test','elapsed', 'relative')
-)
-print(PredictArrayTest)
+These microbenchmarks are available below:
 
 
-SchuSp =   Schumaker(x,y, Vectorise = FALSE)$Spline
-PredictPointTest = rbenchmark::benchmark(
-  replicate(100,SchuSp(runif(1))),
-  replicate(100,BaseSp(runif(1))),
-  replicate(100,ScamPr(runif(1))),
-  replicate(100,CobsPr(runif(1))),
-  columns = c('test','elapsed', 'relative')
-)
-print(PredictPointTest)
 
-```
-
-## Reference
-
-The original reference is:
-Schumaker, L.L. 1983. On shape-preserving quadratic spline interpolation. SIAM Journal of Numerical Analysis 20: 854-64.
-
-The key reference I used to write it is is Kenneth L. Judd's textbook entitled Numerical Methods in Economics (1998). This presents precisely how to create the spline and it is simple to reconcile the code with the equations from this book. This book also gives more detail on solving dynamic control problems. A further reference which advocates the use of the schumaker spline is Ljungqvist and Sargent's textbook Recursive Economic Theory.

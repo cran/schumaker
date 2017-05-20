@@ -4,7 +4,7 @@
 \alias{Schumaker}
 \title{Create a Schumaker spline}
 \usage{
-Schumaker(x, y, ff = "Not-Supplied", Vectorised = TRUE,
+Schumaker(x, y, gradients = "Not-Supplied", Vectorised = TRUE,
   Extrapolation = c("Curve", "Constant", "Linear"))
 }
 \arguments{
@@ -12,7 +12,7 @@ Schumaker(x, y, ff = "Not-Supplied", Vectorised = TRUE,
 
 \item{y}{A corresponding vector of y coordinates}
 
-\item{ff}{(Optional) A corresponding vector of gradiants at the data points. If not supplied this is estimated.}
+\item{gradients}{(Optional) A corresponding vector of gradiants at the data points. If not supplied this is estimated.}
 
 \item{Vectorised}{This is a boolean parameter. Set to TRUE if you want to be able to input vectors to the created spline. If you will only input single values set this to FALSE as it is a bit faster.}
 
@@ -37,6 +37,7 @@ lines(xarray, Result2, col = 2)
 lines(xarray, Result3, col = 3)
 }
 \references{
+Schumaker, L.L. 1983. On shape-preserving quadratic spline interpolation. SIAM Journal of Numerical Analysis 20: 854-64.
+
 Judd (1998). Numerical Methods in Economics. MIT Press
 }
-

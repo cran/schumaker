@@ -1,10 +1,10 @@
 Package: schumaker
 Type: Package
 Title: Schumaker Shape-Preserving Spline
-Version: 0.3
-Date: 2016-02-29
-Author: Stuart Baumann [aut, cre], Margaryta Klymak[ctb]
-Maintainer: Stuart Baumann <Stuart.Baumann@ed.ac.uk>
+Version: 1.0
+Date: 2017-05-06
+Author: Stuart Baumann [aut, cre], Margaryta Klymak[aut]
+Maintainer: Stuart Baumann <Stuart@StuartBaumann.com>
 Description: This is a shape preserving spline which is guaranteed
     to be monotonic and concave or convex if the data is monotonic
     and concave or convex. It does not use any optimisation and is
@@ -15,10 +15,10 @@ Description: This is a shape preserving spline which is guaranteed
     outside the interpolation domain.
 License: MIT + file LICENSE
 LazyData: TRUE
-Suggests: knitr, numDeriv, cobs, scam, microbenchmark
+Suggests: knitr, numDeriv, cobs, scam, rbenchmark
 VignetteBuilder: knitr
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1
 NeedsCompilation: no
-Packaged: 2016-02-29 15:16:32 UTC; stuar
+Packaged: 2017-05-20 22:28:51 UTC; stuar
 Repository: CRAN
-Date/Publication: 2016-02-29 18:39:52
+Date/Publication: 2017-05-20 23:10:16 UTC

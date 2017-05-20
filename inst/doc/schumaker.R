@@ -53,50 +53,52 @@ lines(xarray, SchumSplineConstantVals, col = 2)
 lines(xarray, SchumSplineLinearVals, col = 3)
 
 ## ---- fig.show='hold', fig.width=7, fig.height=4.5-----------------------
-library(microbenchmark)
 library(cobs)
-library(scam)
+#library(scam)
 
 x = seq(1,10)
 y = log(x)
 dat = data.frame(x = x, y = y)
 xarray = seq(0,15,0.01)
 
-ScamSpline = function(dat) {scam(y~s(x,k=4,bs="mdcx",m=1),data=dat)}
-CobsSpline = function(x,y) {cobs(x , y, constraint = c("decrease", "convex"), print.mesg = FALSE)}
+ScamSpline = function(dat) {scam::scam(y~s(x,k=4,bs="mdcx",m=1),data=dat)}
+CobsSpline = function(x,y) {cobs::cobs(x , y, constraint = c("decrease", "convex"), print.mesg = FALSE)}
 
-CreateSplineTest = microbenchmark(
-  Schumaker(x,y),
-  splinefun(x,y,"monoH.FC"),
-  ScamSpline(dat),
-  CobsSpline(x,y)
+CreateSplineTest = rbenchmark::benchmark(
+  replicate(10, Schumaker(x,y)),
+  replicate(10,splinefun(x,y,"monoH.FC")),
+  replicate(10,ScamSpline(dat)),
+  replicate(10,CobsSpline(x,y)),
+  columns = c('test','elapsed', 'relative')
 )
-print(CreateSplineTest, unit = "relative", signif = 3)
+print(CreateSplineTest)
 
 BaseSp =   splinefun(x,y,"monoH.FC")
 SchuSp =   Schumaker(x,y)$Spline
-ScamSp =   scam(y~s(x,k=4,bs="mdcx",m=1),data=dat)
-CobsSp =   cobs(x , y, constraint = c("decrease", "convex"), print.mesg = FALSE)
+ScamSp =   scam::scam(y~s(x,k=4,bs="mdcx",m=1),data=dat)
+CobsSp =   cobs::cobs(x , y, constraint = c("decrease", "convex"), print.mesg = FALSE)
 
-ScamPr = function(x){  predict.scam(ScamSp,data.frame(x = x))}
+ScamPr = function(x){  scam::predict.scam(ScamSp,data.frame(x = x))}
 CobsPr = function(x){  predict(CobsSp, x)[,2] }
 
-PredictArrayTest = microbenchmark(
-  SchuSp(xarray),
-  BaseSp(xarray),
-  ScamPr(xarray),
-  CobsPr(xarray)
+PredictArrayTest = rbenchmark::benchmark(
+  replicate(10,SchuSp(xarray)),
+  replicate(10,BaseSp(xarray)),
+  replicate(10,ScamPr(xarray)),
+  replicate(10,CobsPr(xarray)),
+  columns = c('test','elapsed', 'relative')
 )
-print(PredictArrayTest, unit = "relative", signif = 3)
+print(PredictArrayTest)
 
 
 SchuSp =   Schumaker(x,y, Vectorise = FALSE)$Spline
-PredictPointTest = microbenchmark(
-  SchuSp(runif(1)),
-  BaseSp(runif(1)),
-  ScamPr(runif(1)),
-  CobsPr(runif(1))
+PredictPointTest = rbenchmark::benchmark(
+  replicate(100,SchuSp(runif(1))),
+  replicate(100,BaseSp(runif(1))),
+  replicate(100,ScamPr(runif(1))),
+  replicate(100,CobsPr(runif(1))),
+  columns = c('test','elapsed', 'relative')
 )
-print(PredictPointTest, unit = "relative", signif = 3)
+print(PredictPointTest)
 
 

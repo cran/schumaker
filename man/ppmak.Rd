@@ -20,4 +20,3 @@ A spline function for the given intervals and quadratic curves. Each function ta
 Create a spline with given intervals and quadratic coefficients.
 This is an internal function that is called from the Schumaker function. It roughly works like ppmak in matlab.
 }
-
