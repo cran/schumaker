@@ -6,11 +6,11 @@
 #' @param gradients (Optional) A corresponding vector of gradiants at the data points. If not supplied this is estimated.
 #' @param Vectorised This is a boolean parameter. Set to TRUE if you want to be able to input vectors to the created spline. If you will only input single values set this to FALSE as it is a bit faster.
 #' @param Extrapolation This determines how the spline function responds when an input is recieved outside the domain of x. The options are "Curve" which outputs the result of the point on the quadratic curve at the nearest interval, "Constant" which outputs the y value at the end of the x domain and "Linear" which extends the spline using the gradiant at the edge of x.
-#'
+#' @param edgeGradients This gives the options of specifing the gradients at either edge of the domain. By default this is c(NA,NA) meaning that the defaults from the original paper are used. If this is set to c(0,NA) for instance this will mean that the left edge gradient is zero and the right edge gradient is as recommended in the original paper. This setting has no impact if a full set of gradients is input.
 #' @return A list with 3 spline functions and a table with spline intervals and coefficients. The first spline is the schumaker spline, the second spline is the first derivative of the schumaker spline, the third spline is the second derivative of the schumaker spline. Each function takes an x value (or vector if Vectorised = TRUE) and outputs the interpolated y value (or relevant derivative).
 #' @references Schumaker, L.L. 1983. On shape-preserving quadratic spline interpolation. SIAM Journal of Numerical Analysis 20: 854-64.
 #' @references Judd (1998). Numerical Methods in Economics. MIT Press
-#' 
+#'
 #' @examples
 #' x = seq(1,6)
 #' y = log(x)
@@ -26,7 +26,7 @@
 #' lines(xarray, Result2, col = 2)
 #' lines(xarray, Result3, col = 3)
 
-Schumaker <- function(x,y, gradients = "Not-Supplied", Vectorised = TRUE, Extrapolation = c("Curve", "Constant", "Linear")){
+Schumaker <- function(x,y, gradients = "Not-Supplied", Vectorised = TRUE, Extrapolation = c("Curve", "Constant", "Linear"), edgeGradients = c(NA,NA)){
   Extrapolation = Extrapolation[1]
   if (!(Extrapolation %in% c("Constant", "Linear", "Curve"))){stop("The extrapolation parameter defines what the function returns when evaluated
                                                                       outside the domain of the interpolation data. \n Choose 'Constant' for constant
@@ -48,7 +48,9 @@ if (gradients == "Not-Supplied"){
   MiddleSiwithoutApplyingCondition = (L[1:(n-2)]*d[1:(n-2)]+L[2:(n-1)] * d[2:(n-1)]) / (L[1:(n-2)]+L[2:(n-1)])
   sb = Conditionsi * MiddleSiwithoutApplyingCondition
   # Judd (1998), page 234, Second Equation line plus 6.11.6 gives this array of slopes.
-  gradients = c(((-sb[1]+3*d[1])/2),  sb,  ((3*d[n-1]-sb[n-2])/2))
+  defaultEdgeGradients = c((3*d[1]-sb[1])/2, (3*d[n-1]-sb[n-2])/2)
+  edgeGradients[is.na(edgeGradients)] = defaultEdgeGradients[is.na(edgeGradients)]
+  gradients = c(edgeGradients[1] ,  sb,  edgeGradients[2])
 }
 
 NumberOfIntervalsWithKnots = 2*(n-1)

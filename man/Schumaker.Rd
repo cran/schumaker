@@ -5,7 +5,8 @@
 \title{Create a Schumaker spline}
 \usage{
 Schumaker(x, y, gradients = "Not-Supplied", Vectorised = TRUE,
-  Extrapolation = c("Curve", "Constant", "Linear"))
+  Extrapolation = c("Curve", "Constant", "Linear"), edgeGradients = c(NA,
+  NA))
 }
 \arguments{
 \item{x}{A vector of x coordinates}
@@ -17,6 +18,8 @@ Schumaker(x, y, gradients = "Not-Supplied", Vectorised = TRUE,
 \item{Vectorised}{This is a boolean parameter. Set to TRUE if you want to be able to input vectors to the created spline. If you will only input single values set this to FALSE as it is a bit faster.}
 
 \item{Extrapolation}{This determines how the spline function responds when an input is recieved outside the domain of x. The options are "Curve" which outputs the result of the point on the quadratic curve at the nearest interval, "Constant" which outputs the y value at the end of the x domain and "Linear" which extends the spline using the gradiant at the edge of x.}
+
+\item{edgeGradients}{This gives the options of specifing the gradients at either edge of the domain. By default this is c(NA,NA) meaning that the defaults from the original paper are used. If this is set to c(0,NA) for instance this will mean that the left edge gradient is zero and the right edge gradient is as recommended in the original paper. This setting has no impact if a full set of gradients is input.}
 }
 \value{
 A list with 3 spline functions and a table with spline intervals and coefficients. The first spline is the schumaker spline, the second spline is the first derivative of the schumaker spline, the third spline is the second derivative of the schumaker spline. Each function takes an x value (or vector if Vectorised = TRUE) and outputs the interpolated y value (or relevant derivative).

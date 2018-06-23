@@ -11,8 +11,7 @@ Base1 = DerivBaseSpline(xarray)
 Deriv2BaseSpline = splinefun(xarray, numDeriv::grad(DerivBaseSpline, xarray))
 Base2 = Deriv2BaseSpline(xarray)
 
-plot(xarray, Base0, type = "l", col = 4, ylim = c(-1,3), main = "Base Spline and first two derivatives",
-     ylab = "Spline and derivatives", xlab = "x")
+plot(xarray, Base0, type = "l", col = 4, ylim = c(-1,3), main = "Base Spline and first two derivatives", ylab = "Spline and derivatives", xlab = "x")
 lines(xarray, Base1, col = 2)
 lines(xarray, Base2, col = 3)
 abline(h = 0, col = 1)
@@ -25,8 +24,7 @@ Schum0 = SchumSpline$Spline(xarray)
 Schum1 = SchumSpline$DerivativeSpline(xarray)
 Schum2 = SchumSpline$SecondDerivativeSpline(xarray)
 
-plot(xarray, Schum0, type = "l", col = 4, ylim = c(-1,3), main = "Schumaker Spline and first two derivatives",
-     ylab = "Spline and derivatives", xlab = "x")
+plot(xarray, Schum0, type = "l", col = 4, ylim = c(-1,3), main = "Schumaker Spline and first two derivatives", ylab = "Spline and derivatives", xlab = "x")
 lines(xarray, Schum1, col = 2)
 lines(xarray, Schum2, col = 3)
 abline(h = 0, col = 1)
@@ -51,6 +49,42 @@ plot(xarray, SchumSplineCurveVals, type = "l", col = 1, ylim = c(-5,5),
      main = "Ways of predicting outside of sample", ylab = "Spline value", xlab = "x")
 lines(xarray, SchumSplineConstantVals, col = 2)
 lines(xarray, SchumSplineLinearVals, col = 3)
+
+## ---- fig.show='hold', fig.width=7, fig.height=4.5-----------------------
+x = c(-3,-1,-0.5,0)
+y = c(0, 0.007, 2, 5)
+
+sp_all = Schumaker(x,y)
+sp = sp_all$Spline
+sp1 = sp_all$DerivativeSpline
+sp2 = sp_all$SecondDerivativeSpline
+
+xarray = seq(min(x), max(x), length.out = 500)
+yarray0 = sp(xarray)
+plot(x,y, col = 1)
+lines(xarray,yarray0, col = 2)
+yarray1 = sp1(xarray)
+lines(xarray,yarray1, col = 3)
+yarray2 = sp2(xarray)
+lines(xarray,yarray2, col = 4)
+
+## ---- fig.show='hold', fig.width=7, fig.height=4.5-----------------------
+x = c(-3,-1,-0.5,0)
+y = c(0, 0.007, 2, 5)
+
+sp_all = Schumaker(x,y, edgeGradients = c(0,NA))
+sp = sp_all$Spline
+sp1 = sp_all$DerivativeSpline
+sp2 = sp_all$SecondDerivativeSpline
+
+xarray = seq(min(x), max(x), length.out = 500)
+yarray0 = sp(xarray)
+plot(x,y, col = 1)
+lines(xarray,yarray0, col = 2)
+yarray1 = sp1(xarray)
+lines(xarray,yarray1, col = 3)
+yarray2 = sp2(xarray)
+lines(xarray,yarray2, col = 4)
 
 ## ---- fig.show='hold', fig.width=7, fig.height=4.5-----------------------
 library(cobs)
