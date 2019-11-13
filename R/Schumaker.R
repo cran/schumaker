@@ -3,7 +3,7 @@
 #' @export
 #' @param x A vector of x coordinates
 #' @param y A corresponding vector of y coordinates
-#' @param gradients (Optional) A corresponding vector of gradiants at the data points. If not supplied this is estimated.
+#' @param gradients (Optional) A corresponding vector of gradiants at the data points. If this is NA then it will be estimated.
 #' @param Vectorised This is a boolean parameter. Set to TRUE if you want to be able to input vectors to the created spline. If you will only input single values set this to FALSE as it is a bit faster.
 #' @param Extrapolation This determines how the spline function responds when an input is recieved outside the domain of x. The options are "Curve" which outputs the result of the point on the quadratic curve at the nearest interval, "Constant" which outputs the y value at the end of the x domain and "Linear" which extends the spline using the gradiant at the edge of x.
 #' @param edgeGradients This gives the options of specifing the gradients at either edge of the domain. By default this is c(NA,NA) meaning that the defaults from the original paper are used. If this is set to c(0,NA) for instance this will mean that the left edge gradient is zero and the right edge gradient is as recommended in the original paper. This setting has no impact if a full set of gradients is input.
@@ -26,7 +26,7 @@
 #' lines(xarray, Result2, col = 2)
 #' lines(xarray, Result3, col = 3)
 
-Schumaker <- function(x,y, gradients = "Not-Supplied", Vectorised = TRUE, Extrapolation = c("Curve", "Constant", "Linear"), edgeGradients = c(NA,NA)){
+Schumaker <- function(x,y, gradients = NA, Vectorised = TRUE, Extrapolation = c("Curve", "Constant", "Linear"), edgeGradients = c(NA,NA)){
   Extrapolation = Extrapolation[1]
   if (!(Extrapolation %in% c("Constant", "Linear", "Curve"))){stop("The extrapolation parameter defines what the function returns when evaluated
                                                                       outside the domain of the interpolation data. \n Choose 'Constant' for constant
@@ -38,7 +38,7 @@ Schumaker <- function(x,y, gradients = "Not-Supplied", Vectorised = TRUE, Extrap
 
 n = length(x)
 
-if (gradients == "Not-Supplied"){
+if (gradients[1] %in% c(NA,"Not-Supplied")){
   # Judd (1998), page 233, second last equation
   L = sqrt( (x[2:n]-x[1:(n-1)])^2 + (y[2:n]-y[1:(n-1)])^2)
   # Judd (1998), page 233, last equation
@@ -110,17 +110,18 @@ if ((Extrapolation %in% c("Constant", "Linear"))){
   IntervalTab = rbind(BotRow, IntervalTab, TopRow)
 }
 
-# It is important use individual vectors and matrices rather than datatables or data.frames for speed
-IntStarts = c(IntervalTab$StartOfInterval, Inf)
-SpCoefs = data.matrix(IntervalTab[,c("C", "B", "A")])
+  # It is important use individual vectors and matrices rather than datatables or data.frames for speed
+  IntStarts = c(IntervalTab$StartOfInterval, Inf)
+  SpCoefs = data.matrix(IntervalTab[,c("C", "B", "A")])
 
-# This is the end spline which looks up the correct interval and evaluates with the correpsonding coefficients
-Spline0 = ppmak(IntStarts, SpCoefs, Vectorised )
-Spline1 = ppmakDeriv(IntStarts, SpCoefs, Vectorised )
-Spline2 = ppmak2Deriv(IntStarts, SpCoefs, Vectorised )
-# This just boosts the speed of evaluation by 5ish percent. Not essential.
-CompiledSpline0 = compiler::cmpfun(Spline0)
-CompiledSpline1 = compiler::cmpfun(Spline1)
-CompiledSpline2 = compiler::cmpfun(Spline2)
-return(list(Spline = CompiledSpline0, DerivativeSpline = CompiledSpline1, SecondDerivativeSpline = CompiledSpline2 , IntervalTab = IntervalTab))
+  # This is the end spline which looks up the correct interval and evaluates with the corresponding coefficients
+  Spline0 = ppmak(IntStarts, SpCoefs, Vectorised )
+  Spline1 = ppmakDeriv(IntStarts, SpCoefs, Vectorised )
+  Spline2 = ppmak2Deriv(IntStarts, SpCoefs, Vectorised )
+  # This just boosts the speed of evaluation by 5ish percent. Not essential.
+  CompiledSpline0 = compiler::cmpfun(Spline0)
+  CompiledSpline1 = compiler::cmpfun(Spline1)
+  CompiledSpline2 = compiler::cmpfun(Spline2)
+  return(list(Spline = CompiledSpline0, DerivativeSpline = CompiledSpline1, SecondDerivativeSpline = CompiledSpline2 , IntervalTab = IntervalTab))
 }
+

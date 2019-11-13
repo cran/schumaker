@@ -87,6 +87,24 @@ yarray2 = sp2(xarray)
 lines(xarray,yarray2, col = 4)
 
 ## ---- fig.show='hold', fig.width=7, fig.height=4.5-----------------------
+RICs = c("BARC.L", "VOD.L", "IBM.L")
+Dates = as.Date(c("11-11-2019", "12-11-2019", "13-11-2019", "14-11-2019", "15-11-2019"), format="%d-%m-%Y")
+times = seq(0,28800, length.out = 10) # We are going to interpolate by time of day. This is the x variable. So we state it in terms of seconds. from start of day's trade.
+dd = expand.grid(TIME = times, Date = Dates, RIC = RICs)
+dd = merge(dd, data.frame(RIC = RICs, PRICE = c(160.00, 162.24, 137.24))) # Making example prices. These are not accurate and I am ignoring currency.
+randomness = rlnorm(dim(dd)[1])
+dd$PRICE = dd$PRICE * cumprod(randomness)
+
+## ---- fig.show='hold', fig.width=7, fig.height=4.5-----------------------
+approx_func = function(x,y){approxfun(x, y)}
+dispatched_approxfun = make_approx_functions_from_dataframe(dd, group_vars = c("RIC", "Date"), x_var = "TIME", y_var = "PRICE", approx_func)
+dispatched_approxfun("BARC.L", Dates[2], c(100, 156, 6045))
+
+approx_func = function(x,y){Schumaker(x, y)$Spline}
+approxfun_in_lists = make_approx_functions_from_dataframe(dd, group_vars = c("RIC", "Date"), x_var = "TIME", y_var = "PRICE", approx_func)
+dispatched_approxfun("IBM.L", Dates[3], c(100, 156, 6045))
+
+## ---- fig.show='hold', fig.width=7, fig.height=4.5-----------------------
 library(cobs)
 #library(scam)
 

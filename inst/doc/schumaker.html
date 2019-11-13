@@ -12,14 +12,14 @@
 
 <meta name="author" content="Stuart Baumann &amp; Margaryta Klymak" />
 
-<meta name="date" content="2018-06-23" />
+<meta name="date" content="2019-11-13" />
 
 <title>Schumaker Spline</title>
 
 
 
 <style type="text/css">code{white-space: pre;}</style>
-<style type="text/css">
+<style type="text/css" data-origin="pandoc">
 div.sourceCode { overflow-x: auto; }
 table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
   margin: 0; padding: 0; vertical-align: baseline; border: none; }
@@ -55,7 +55,29 @@ code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
 code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
 code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+
 </style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' || rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
 
 
 
@@ -70,7 +92,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Schumaker Spline</h1>
 <h4 class="author"><em>Stuart Baumann &amp; Margaryta Klymak</em></h4>
-<h4 class="date"><em>2018-06-23</em></h4>
+<h4 class="date"><em>2019-11-13</em></h4>
 
 
 
@@ -181,6 +203,27 @@ yarray2 =<span class="st"> </span><span class="kw">sp2</span>(xarray)
 <span class="kw">lines</span>(xarray,yarray2, <span class="dt">col =</span> <span class="dv">4</span>)</code></pre></div>
 <p><img src="data:image/png;base64,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" /><!-- --></p>
 </div>
+<div id="speeding-up-using-multiple-functions-for-interpolations-for-various-groups." class="section level2">
+<h2>Speeding up using multiple functions for interpolations for various groups.</h2>
+<p>Consider we have a dataframe with x and y variables for multiple different groups. We want to interpolate using this dataframe. We need a different approximation function for each group. The schumaker package implements a way to do this. For every group present in the dataframe a new function is created. A function that calls the correct interpolation function is returned.</p>
+<p>As an example consider we have some equity prices for several stocks, several days and several times of the day. We want to be able to interpolate for other times. First generating some example data.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">RICs =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;BARC.L&quot;</span>, <span class="st">&quot;VOD.L&quot;</span>, <span class="st">&quot;IBM.L&quot;</span>)
+Dates =<span class="st"> </span><span class="kw">as.Date</span>(<span class="kw">c</span>(<span class="st">&quot;11-11-2019&quot;</span>, <span class="st">&quot;12-11-2019&quot;</span>, <span class="st">&quot;13-11-2019&quot;</span>, <span class="st">&quot;14-11-2019&quot;</span>, <span class="st">&quot;15-11-2019&quot;</span>), <span class="dt">format=</span><span class="st">&quot;%d-%m-%Y&quot;</span>)
+times =<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">28800</span>, <span class="dt">length.out =</span> <span class="dv">10</span>) <span class="co"># We are going to interpolate by time of day. This is the x variable. So we state it in terms of seconds. from start of day's trade.</span>
+dd =<span class="st"> </span><span class="kw">expand.grid</span>(<span class="dt">TIME =</span> times, <span class="dt">Date =</span> Dates, <span class="dt">RIC =</span> RICs)
+dd =<span class="st"> </span><span class="kw">merge</span>(dd, <span class="kw">data.frame</span>(<span class="dt">RIC =</span> RICs, <span class="dt">PRICE =</span> <span class="kw">c</span>(<span class="fl">160.00</span>, <span class="fl">162.24</span>, <span class="fl">137.24</span>))) <span class="co"># Making example prices. These are not accurate and I am ignoring currency.</span>
+randomness =<span class="st"> </span><span class="kw">rlnorm</span>(<span class="kw">dim</span>(dd)[<span class="dv">1</span>])
+dd<span class="op">$</span>PRICE =<span class="st"> </span>dd<span class="op">$</span>PRICE <span class="op">*</span><span class="st"> </span><span class="kw">cumprod</span>(randomness)</code></pre></div>
+<p>Now we can create a function that interpolates for each day and for each stock. Then we can intterpolate to get the interpolated price at the desired time of the day. This is done below, first with the base function approxfun and secondly with a schumaker spline.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">approx_func =<span class="st"> </span><span class="cf">function</span>(x,y){<span class="kw">approxfun</span>(x, y)}
+dispatched_approxfun =<span class="st"> </span><span class="kw">make_approx_functions_from_dataframe</span>(dd, <span class="dt">group_vars =</span> <span class="kw">c</span>(<span class="st">&quot;RIC&quot;</span>, <span class="st">&quot;Date&quot;</span>), <span class="dt">x_var =</span> <span class="st">&quot;TIME&quot;</span>, <span class="dt">y_var =</span> <span class="st">&quot;PRICE&quot;</span>, approx_func)
+<span class="kw">dispatched_approxfun</span>(<span class="st">&quot;BARC.L&quot;</span>, Dates[<span class="dv">2</span>], <span class="kw">c</span>(<span class="dv">100</span>, <span class="dv">156</span>, <span class="dv">6045</span>))</code></pre></div>
+<pre><code>## [1] 100.84671  99.67725 122.44428</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">approx_func =<span class="st"> </span><span class="cf">function</span>(x,y){<span class="kw">Schumaker</span>(x, y)<span class="op">$</span>Spline}
+approxfun_in_lists =<span class="st"> </span><span class="kw">make_approx_functions_from_dataframe</span>(dd, <span class="dt">group_vars =</span> <span class="kw">c</span>(<span class="st">&quot;RIC&quot;</span>, <span class="st">&quot;Date&quot;</span>), <span class="dt">x_var =</span> <span class="st">&quot;TIME&quot;</span>, <span class="dt">y_var =</span> <span class="st">&quot;PRICE&quot;</span>, approx_func)
+<span class="kw">dispatched_approxfun</span>(<span class="st">&quot;IBM.L&quot;</span>, Dates[<span class="dv">3</span>], <span class="kw">c</span>(<span class="dv">100</span>, <span class="dv">156</span>, <span class="dv">6045</span>))</code></pre></div>
+<pre><code>## [1] 39332.48 40904.80 86632.82</code></pre>
+</div>
 <div id="example-a-simple-consumption-smoothing-problem" class="section level2">
 <h2>Example: A simple consumption smoothing problem</h2>
 <p>Consider a consumer that has a budget of <span class="math inline">\(B_t\)</span> at time <span class="math inline">\(t\)</span> and a periodic income of <span class="math inline">\(1\)</span>. She has a periodic utility function given by:</p>
@@ -209,7 +252,7 @@ yarray2 =<span class="st"> </span><span class="kw">sp2</span>(xarray)
 <li>If they are we end the algorithm</li>
 <li>If they are not we go back to point 3.</li>
 </ul>
-<p>This strategy relies on the consumption problem being a contraction mapping. This means that if we use this algorithm we will converge to a fixed point function. The FixedPoint package (by the same authors as this package) can be useful here in accelerating the convergence. A more formal presentation of the preeding consumption smoothing problem and the code to solve it can be found in this package’s documentation.</p>
+<p>This strategy relies on the consumption problem being a contraction mapping. This means that if we use this algorithm we will converge to a fixed point function. The FixedPoint package (by the same authors as this package) can be useful here in accelerating the convergence. A more formal presentation of the preeding consumption smoothing problem and the code to solve it can be found in a paper discussing fixed point acceleration in R (Baumann &amp; Klymak 2019).</p>
 </div>
 <div id="why-a-schumaker-spline-is-necessary" class="section level3">
 <h3>Why a schumaker spline is necessary</h3>
@@ -227,9 +270,8 @@ yarray2 =<span class="st"> </span><span class="kw">sp2</span>(xarray)
 <li>Compared to other splines (including the base spline), the schumaker spline is faster or roughly equally fast in evaluating points.</li>
 </ul>
 <p>These benchmarks are available below:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(cobs)</code></pre></div>
-<pre><code>## Warning: package 'cobs' was built under R version 3.4.4</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#library(scam)</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(cobs)
+<span class="co">#library(scam)</span>
 
 x =<span class="st"> </span><span class="kw">seq</span>(<span class="dv">1</span>,<span class="dv">10</span>)
 y =<span class="st"> </span><span class="kw">log</span>(x)
@@ -248,10 +290,10 @@ CreateSplineTest =<span class="st"> </span>rbenchmark<span class="op">::</span><
 )
 <span class="kw">print</span>(CreateSplineTest)</code></pre></div>
 <pre><code>##                                         test elapsed relative
-## 4            replicate(10, CobsSpline(x, y))   49.60  354.286
-## 3             replicate(10, ScamSpline(dat))   38.30  273.571
-## 1             replicate(10, Schumaker(x, y))   40.14  286.714
-## 2 replicate(10, splinefun(x, y, &quot;monoH.FC&quot;))    0.14    1.000</code></pre>
+## 4            replicate(10, CobsSpline(x, y))   24.97  832.333
+## 3             replicate(10, ScamSpline(dat))  109.48 3649.333
+## 1             replicate(10, Schumaker(x, y))   17.14  571.333
+## 2 replicate(10, splinefun(x, y, &quot;monoH.FC&quot;))    0.03    1.000</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">BaseSp =<span class="st">   </span><span class="kw">splinefun</span>(x,y,<span class="st">&quot;monoH.FC&quot;</span>)
 SchuSp =<span class="st">   </span><span class="kw">Schumaker</span>(x,y)<span class="op">$</span>Spline
 ScamSp =<span class="st">   </span>scam<span class="op">::</span><span class="kw">scam</span>(y<span class="op">~</span><span class="kw">s</span>(x,<span class="dt">k=</span><span class="dv">4</span>,<span class="dt">bs=</span><span class="st">&quot;mdcx&quot;</span>,<span class="dt">m=</span><span class="dv">1</span>),<span class="dt">data=</span>dat)
@@ -269,10 +311,10 @@ PredictArrayTest =<span class="st"> </span>rbenchmark<span class="op">::</span><
 )
 <span class="kw">print</span>(PredictArrayTest)</code></pre></div>
 <pre><code>##                            test elapsed relative
-## 2 replicate(10, BaseSp(xarray))    0.19    1.118
-## 4 replicate(10, CobsPr(xarray))    0.19    1.118
-## 3 replicate(10, ScamPr(xarray))    5.77   33.941
-## 1 replicate(10, SchuSp(xarray))    0.17    1.000</code></pre>
+## 2 replicate(10, BaseSp(xarray))    0.11      2.2
+## 4 replicate(10, CobsPr(xarray))    0.05      1.0
+## 3 replicate(10, ScamPr(xarray))    1.97     39.4
+## 1 replicate(10, SchuSp(xarray))    0.08      1.6</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">SchuSp =<span class="st">   </span><span class="kw">Schumaker</span>(x,y, <span class="dt">Vectorise =</span> <span class="ot">FALSE</span>)<span class="op">$</span>Spline
 PredictPointTest =<span class="st"> </span>rbenchmark<span class="op">::</span><span class="kw">benchmark</span>(
   <span class="kw">replicate</span>(<span class="dv">100</span>,<span class="kw">SchuSp</span>(<span class="kw">runif</span>(<span class="dv">1</span>))),
@@ -283,15 +325,18 @@ PredictPointTest =<span class="st"> </span>rbenchmark<span class="op">::</span><
 )
 <span class="kw">print</span>(PredictPointTest)</code></pre></div>
 <pre><code>##                               test elapsed relative
-## 2 replicate(100, BaseSp(runif(1)))    0.31     1.24
-## 4 replicate(100, CobsPr(runif(1)))    0.48     1.92
-## 3 replicate(100, ScamPr(runif(1)))   21.96    87.84
-## 1 replicate(100, SchuSp(runif(1)))    0.25     1.00</code></pre>
+## 2 replicate(100, BaseSp(runif(1)))    0.16      3.2
+## 4 replicate(100, CobsPr(runif(1)))    0.26      5.2
+## 3 replicate(100, ScamPr(runif(1)))   10.08    201.6
+## 1 replicate(100, SchuSp(runif(1)))    0.05      1.0</code></pre>
 </div>
 <div id="reference" class="section level2">
 <h2>Reference</h2>
-<p>The original reference is: Schumaker, L.L. 1983. On shape-preserving quadratic spline interpolation. SIAM Journal of Numerical Analysis 20: 854-64.</p>
+<p>The original reference is:</p>
+<p>Schumaker, L.L. 1983. On shape-preserving quadratic spline interpolation. SIAM Journal of Numerical Analysis 20: 854-64.</p>
 <p>The key reference used to write this package is Kenneth L. Judd’s textbook entitled Numerical Methods in Economics (1998). This presents precisely how to create the spline and it is simple to reconcile the code with the equations from this book. This book also gives more detail on solving dynamic control problems. A further reference which advocates the use of the schumaker spline is Ljungqvist and Sargent’s textbook Recursive Economic Theory.</p>
+<p>A paper with a more code example of the consumption smoothing problem in R is:</p>
+<p>Baumann, S. and Klymak M. 2019. Fixed Point Acceleration in R. The R Journal (2019) 11:1, pages 359-375.</p>
 </div>
 <div class="footnotes">
 <hr />

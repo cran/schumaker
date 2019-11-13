@@ -4,16 +4,16 @@
 \alias{Schumaker}
 \title{Create a Schumaker spline}
 \usage{
-Schumaker(x, y, gradients = "Not-Supplied", Vectorised = TRUE,
-  Extrapolation = c("Curve", "Constant", "Linear"), edgeGradients = c(NA,
-  NA))
+Schumaker(x, y, gradients = NA, Vectorised = TRUE,
+  Extrapolation = c("Curve", "Constant", "Linear"),
+  edgeGradients = c(NA, NA))
 }
 \arguments{
 \item{x}{A vector of x coordinates}
 
 \item{y}{A corresponding vector of y coordinates}
 
-\item{gradients}{(Optional) A corresponding vector of gradiants at the data points. If not supplied this is estimated.}
+\item{gradients}{(Optional) A corresponding vector of gradiants at the data points. If this is NA then it will be estimated.}
 
 \item{Vectorised}{This is a boolean parameter. Set to TRUE if you want to be able to input vectors to the created spline. If you will only input single values set this to FALSE as it is a bit faster.}
 
