@@ -1,8 +1,8 @@
 Package: schumaker
 Type: Package
 Title: Schumaker Shape-Preserving Spline
-Version: 1.2
-Date: 2019-11-13
+Version: 1.2.1
+Date: 2021-09-09
 Author: Stuart Baumann [aut, cre], Margaryta Klymak[aut]
 Maintainer: Stuart Baumann <Stuart@StuartBaumann.com>
 Description: This is a shape preserving spline <doi:10.1137/0720057>
@@ -14,11 +14,10 @@ Description: This is a shape preserving spline <doi:10.1137/0720057>
     of the spline and options for determining behaviour when evaluated 
     outside the interpolation domain.
 License: MIT + file LICENSE
-LazyData: TRUE
 Suggests: testthat, knitr, numDeriv, cobs, scam, rbenchmark
 VignetteBuilder: knitr
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.1
 NeedsCompilation: no
-Packaged: 2019-11-13 00:11:00 UTC; dr
+Packaged: 2021-09-09 21:14:57 UTC; dr
 Repository: CRAN
-Date/Publication: 2019-11-13 09:10:02 UTC
+Date/Publication: 2021-09-09 22:00:03 UTC

@@ -4,9 +4,14 @@
 \alias{Schumaker}
 \title{Create a Schumaker spline}
 \usage{
-Schumaker(x, y, gradients = NA, Vectorised = TRUE,
+Schumaker(
+  x,
+  y,
+  gradients = NA,
+  Vectorised = TRUE,
   Extrapolation = c("Curve", "Constant", "Linear"),
-  edgeGradients = c(NA, NA))
+  edgeGradients = c(NA, NA)
+)
 }
 \arguments{
 \item{x}{A vector of x coordinates}

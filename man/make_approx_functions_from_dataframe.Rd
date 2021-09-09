@@ -4,8 +4,13 @@
 \alias{make_approx_functions_from_dataframe}
 \title{make_approx_functions_from_dataframe}
 \usage{
-make_approx_functions_from_dataframe(dataframe, group_vars, x_var, y_var,
-  approx_func)
+make_approx_functions_from_dataframe(
+  dataframe,
+  group_vars,
+  x_var,
+  y_var,
+  approx_func
+)
 }
 \arguments{
 \item{dataframe}{A data.frame with your data.}

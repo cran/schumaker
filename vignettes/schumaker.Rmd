@@ -43,6 +43,10 @@ Here you can see that the first derivative is always positive - the spline is mo
 Now we can show the schumaker spline:
 ```{r, fig.show='hold', fig.width=7, fig.height=4.5}
 library(schumaker)
+```
+
+
+```{r, fig.show='hold', fig.width=7, fig.height=4.5}
 SchumSpline = schumaker::Schumaker(x,y)
 Schum0 = SchumSpline$Spline(xarray)
 Schum1 = SchumSpline$DerivativeSpline(xarray)
@@ -212,7 +216,7 @@ These benchmarks are available below:
 
 ```{r, fig.show='hold', fig.width=7, fig.height=4.5}
 library(cobs)
-#library(scam)
+library(scam)
 
 x = seq(1,10)
 y = log(x)

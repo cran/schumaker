@@ -1,4 +1,4 @@
-## ---- fig.show='hold', fig.width=7, fig.height=4.5-----------------------
+## ---- fig.show='hold', fig.width=7, fig.height=4.5----------------------------
 x = seq(1,10)
 y = log(x)
 
@@ -17,8 +17,10 @@ lines(xarray, Base2, col = 3)
 abline(h = 0, col = 1)
 text(x=rep(8,8,8), y=c(2, 0.5,-0.2), pos=4, labels=c('Spline', 'First Derivative', 'Second Derivative'))
 
-## ---- fig.show='hold', fig.width=7, fig.height=4.5-----------------------
+## ---- fig.show='hold', fig.width=7, fig.height=4.5----------------------------
 library(schumaker)
+
+## ---- fig.show='hold', fig.width=7, fig.height=4.5----------------------------
 SchumSpline = schumaker::Schumaker(x,y)
 Schum0 = SchumSpline$Spline(xarray)
 Schum1 = SchumSpline$DerivativeSpline(xarray)
@@ -30,7 +32,7 @@ lines(xarray, Schum2, col = 3)
 abline(h = 0, col = 1)
 text(x=rep(8,8,8), y=c(2, 0.5,-0.2), pos=4, labels=c('Spline', 'First Derivative', 'Second Derivative'))
 
-## ---- fig.show='hold', fig.width=7, fig.height=4.5-----------------------
+## ---- fig.show='hold', fig.width=7, fig.height=4.5----------------------------
 x = seq(1,10)
 y = log(x)
 xarray = seq(-5,15,0.01)
@@ -50,7 +52,7 @@ plot(xarray, SchumSplineCurveVals, type = "l", col = 1, ylim = c(-5,5),
 lines(xarray, SchumSplineConstantVals, col = 2)
 lines(xarray, SchumSplineLinearVals, col = 3)
 
-## ---- fig.show='hold', fig.width=7, fig.height=4.5-----------------------
+## ---- fig.show='hold', fig.width=7, fig.height=4.5----------------------------
 x = c(-3,-1,-0.5,0)
 y = c(0, 0.007, 2, 5)
 
@@ -68,7 +70,7 @@ lines(xarray,yarray1, col = 3)
 yarray2 = sp2(xarray)
 lines(xarray,yarray2, col = 4)
 
-## ---- fig.show='hold', fig.width=7, fig.height=4.5-----------------------
+## ---- fig.show='hold', fig.width=7, fig.height=4.5----------------------------
 x = c(-3,-1,-0.5,0)
 y = c(0, 0.007, 2, 5)
 
@@ -86,7 +88,7 @@ lines(xarray,yarray1, col = 3)
 yarray2 = sp2(xarray)
 lines(xarray,yarray2, col = 4)
 
-## ---- fig.show='hold', fig.width=7, fig.height=4.5-----------------------
+## ---- fig.show='hold', fig.width=7, fig.height=4.5----------------------------
 RICs = c("BARC.L", "VOD.L", "IBM.L")
 Dates = as.Date(c("11-11-2019", "12-11-2019", "13-11-2019", "14-11-2019", "15-11-2019"), format="%d-%m-%Y")
 times = seq(0,28800, length.out = 10) # We are going to interpolate by time of day. This is the x variable. So we state it in terms of seconds. from start of day's trade.
@@ -95,7 +97,7 @@ dd = merge(dd, data.frame(RIC = RICs, PRICE = c(160.00, 162.24, 137.24))) # Maki
 randomness = rlnorm(dim(dd)[1])
 dd$PRICE = dd$PRICE * cumprod(randomness)
 
-## ---- fig.show='hold', fig.width=7, fig.height=4.5-----------------------
+## ---- fig.show='hold', fig.width=7, fig.height=4.5----------------------------
 approx_func = function(x,y){approxfun(x, y)}
 dispatched_approxfun = make_approx_functions_from_dataframe(dd, group_vars = c("RIC", "Date"), x_var = "TIME", y_var = "PRICE", approx_func)
 dispatched_approxfun("BARC.L", Dates[2], c(100, 156, 6045))
@@ -104,9 +106,9 @@ approx_func = function(x,y){Schumaker(x, y)$Spline}
 approxfun_in_lists = make_approx_functions_from_dataframe(dd, group_vars = c("RIC", "Date"), x_var = "TIME", y_var = "PRICE", approx_func)
 dispatched_approxfun("IBM.L", Dates[3], c(100, 156, 6045))
 
-## ---- fig.show='hold', fig.width=7, fig.height=4.5-----------------------
+## ---- fig.show='hold', fig.width=7, fig.height=4.5----------------------------
 library(cobs)
-#library(scam)
+library(scam)
 
 x = seq(1,10)
 y = log(x)
